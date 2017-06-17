@@ -1,0 +1,180 @@
+package com.gcit.LibrarySystem.test;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class LibraryManagement {
+	
+	Scanner scanner  = new Scanner(System.in);
+	
+	public void mainDisplay(){
+		
+		int i = 0;
+		
+		System.out.println("Welcome to the GCIT Library Management System. Which category of a user are you");
+		System.out.println("1) Librarian");
+		System.out.println("2) Administrator");
+		System.out.println("3) Borrower");
+		System.out.println("4) Quit");
+		
+		
+		i = scanner.nextInt();
+		
+		switch (i){
+			
+		case(1):libDisplay1();
+				break;
+			
+		case(2):adminDisplay();
+				break;
+			
+		case(3):borrowerDisplay();
+				break;
+				
+		case(4):return;
+		
+		}
+	}
+	
+	public void adminDisplay(){
+		
+		System.out.println("Admin");
+	}
+	public String libDisplay1(){
+		int i=0; 
+		System.out.println("Lib");
+		System.out.println("Enter the Branch you Manage");
+		System.out.println("Quit to previous menu");
+		i = scanner.nextInt();
+		
+		switch(i){
+		
+		case(1):libDisplay2();
+				break;
+		case(2):mainDisplay();
+				break;
+		}
+		return null;
+	}
+	
+	
+	public void libDisplay2() {
+		
+		JDBCConnect jdbcconnect = new JDBCConnect();
+		
+		Connection conn =JDBCConnect.getConnection();
+		ArrayList<Integer> listBranchId = new ArrayList<Integer>();
+		ArrayList<String> listBranchNames = new ArrayList<String>();
+		ArrayList<String> listBranchAddress = new ArrayList<String>();
+		
+		String inputInArrayList ="";
+		String query = "";
+		//Scanner scan = new Scanner(System.in);
+		//System.out.println("Enter Library branch name to insert: ");
+		//String libBranchName = scan.nextLine();
+		//System.out.println("Enter Library branch Address to insert: ");
+		//String branchAdd = scan.nextLine();
+		//PreparedStatement pstmt = null;
+		Statement stmt;
+		try {
+			
+			stmt = conn.createStatement();
+			query = "select * from tbl_library_branch order by branchId DESC ";
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()){
+				//System.out.println("Branch ID: " +rs.getInt("branchId"));
+				//System.out.println("Branch Name: "+rs.getString("branchName"));
+				//System.out.println("Branch Address: "+rs.getString("branchAddress"));
+				//System.out.println("----------------");
+				/*inputInArrayList.concat(String.valueOf(rs.getInt("branchId")));
+				System.out.println(inputInArrayList);
+				inputInArrayList.concat(" "+rs.getString("branchName"));
+				System.out.println(inputInArrayList);
+				inputInArrayList.concat(" "+rs.getString("branchAddress"));
+				System.out.println(inputInArrayList);*/
+				//listBranchNames.add(inputInArrayList);
+				//inputInArrayList ="";
+				listBranchId.add(rs.getInt("branchId"));
+				listBranchNames.add(rs.getInt("branchId")+","+rs.getString("branchName")+","+ rs.getString("branchAddress"));
+				//listBranchAddress.add(rs.getString("branchAddress"));
+			}
+			//stmt.executeUpdate(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//listBranchNames.forEach(s -> System.out.println(s));
+		for (int i = 0; i < listBranchNames.size(); i++) {
+			//System.out.print(i+" ");
+			String[] splitStr = listBranchNames.get(i).split(",");
+			System.out.println((i+1)+") "+listBranchNames.get(i));
+		}
+		System.out.println((listBranchNames.size()+1)+") Quit to Previous Menu");
+		
+		System.out.println("Enter the number ");
+		int selectedNumber=0;
+		selectedNumber = scanner.nextInt();
+		
+		if (selectedNumber == (listBranchNames.size()+1)){
+			libDisplay1();
+		}
+		else{
+			if (selectedNumber >=0 && selectedNumber <= listBranchNames.size()){
+				
+				for (int i = 0; i < listBranchNames.size(); i++) {
+					//System.out.print(i+" ");
+					if (selectedNumber == (i+1)){
+						libDisplay3(listBranchNames.get(i));
+					}
+					
+				}
+				
+				
+			}
+			else{
+				System.out.println("Please enter a suitable number");
+				libDisplay2();
+			}
+			
+		}
+		/*
+		for (int i = 0; i < listBranchNames.size(); i++) {
+			//System.out.print(i+" ");
+			if (selectedNumber == (i+1)){
+				lib
+				
+			}
+			
+		}*/
+		
+		
+		
+	}
+	public void libDisplay3(String s){
+		
+		System.out.println(s);
+		
+	}
+	
+	public void borrowerDisplay(){
+		System.out.println("borrower");
+		
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		LibraryManagement lm = new LibraryManagement();
+		lm.mainDisplay();
+		
+		
+
+	}
+
+}

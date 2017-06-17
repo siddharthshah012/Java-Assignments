@@ -1,0 +1,8 @@
+package com.gcit.assignment2.ex3;
+
+public class Tuple<A, B, C> {
+	public A First;
+    public B Second;
+    public C Third;
+
+}

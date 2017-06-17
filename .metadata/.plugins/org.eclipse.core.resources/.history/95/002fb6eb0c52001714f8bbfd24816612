@@ -1,0 +1,15 @@
+package com.gcit.LibrarySystem.test;
+
+public class LibraryManagement {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("Welcome to the GCIT Library Management System. Which category of a user are you");
+		System.out.println("1) Librarian");
+		System.out.println("2) Administrator");
+		System.out.println("3) Borrower");
+
+	}
+
+}
