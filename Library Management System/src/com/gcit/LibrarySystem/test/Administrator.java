@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Administrator {
@@ -147,6 +148,7 @@ public class Administrator {
 				conn2.close();
 				bookandAuthor();
 				break;
+				
 	
 		case(2):System.out.println("Enter the Book name to add or enter N/A");
 				String addBook1 = "";
@@ -214,6 +216,8 @@ public class Administrator {
 		default:
 		}
 	}
+	
+	
 	public void updateBookandAuthor() throws SQLException, IOException{	
 		
 		String query="";
@@ -375,7 +379,7 @@ public class Administrator {
 		}
 	}
 	
-	public void publishers(){
+	public void publishers() throws IOException, SQLException{
 		
 		
 		System.out.println("What operation do you wish to perform?");
@@ -389,14 +393,181 @@ public class Administrator {
 		
 		switch(option){
 		
-		case(1):
-		case(2):
-		case(3):
-		case(4):
+		case(1):addpublisher();
+				break;
+		case(2):updatePublisher();
+				break;
+		case(3):deletePublisher();
+				break;
+		case(4):adminDisplay();
+				break;
+			default:adminDisplay();
 			
 		}
 	}
-	public void libraryBranch(){
+	
+	private void addpublisher() throws IOException, SQLException{
+		System.out.println("Enter the publisher Name");
+		String pubName = reader.readLine();
+		System.out.println("Enter the address of Publisher");
+		String pubAddress = reader.readLine();
+		System.out.println("Enter the Phone number of Publisher");
+		String pubPhoneNumber = reader.readLine();
+		String query ="";
+		
+		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "INSERT INTO tbl_publisher (publisherName,publisherAddress,publisherPhone) "
+				+ "VALUES ('"+pubName+"','"+pubAddress+"','"+pubPhoneNumber+"');";
+		
+		int rs = stmt.executeUpdate(query);
+		if (rs ==1){System.out.println("Publisher table inserted");}
+		conn.commit();
+		conn.close();
+		System.out.println("Do you want to associate with any book?");
+		System.out.println("1) Yes");
+		System.out.println("2) N0");
+		
+		ArrayList<String> storeBookTable = new ArrayList<String>();
+		int answer = scanner.nextInt();
+		if (answer == 1){
+			
+			Connection conn1 = JDBCConnect.getConnection();
+			Statement statement ;
+			statement = conn1.createStatement();
+			query = "SELECT * FROM tbl_book;";
+			ResultSet rs1 = statement.executeQuery(query);
+			while(rs1.next()){
+				storeBookTable.add(rs1.getInt("bookId")+" "+rs1.getString("title"));
+			}
+			conn1.commit();
+			for (int i=0; i < storeBookTable.size();i++){
+				System.out.println((i+1)+") "+storeBookTable.get(i));
+			}
+			System.out.println("Enter accordingly book id or book title");
+			System.out.println("Enter The book Title");
+			String bookTitle = reader.readLine();
+			
+			query ="SELECT publisherId from tbl_publisher WHERE publisherName ='"+pubName+"' order by publisherId desc;";
+			ResultSet rs2 = statement.executeQuery(query);
+			int pubId=0;
+			while(rs2.next()){
+				pubId =rs2.getInt("publisherId");
+			}
+			int count =0;
+			for (int j=0; j<storeBookTable.size();j++){
+				String[] splitstr = storeBookTable.get(j).split(" ");
+				
+				if (bookTitle.equals(splitstr[1])){
+					
+					query = "UPDATE tbl_book SET pubId = "+pubId+" WHERE title ='"+bookTitle+"'; " ;
+					
+					int rs3 = statement.executeUpdate(query);
+					if (rs3 ==1){
+						count++;
+					}
+				}
+			}
+			System.out.println(count+" rows were updated");
+			conn1.commit();
+			conn1.close();
+		}
+		else {
+			publishers();
+		}
+		publishers();
+		
+	}
+	private void updatePublisher() throws SQLException, IOException{
+		String query ="";
+		ArrayList<String> storePublisher= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_publisher";
+		
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storePublisher.add(rs.getInt("publisherId")+" "+rs.getString("publisherName")
+					+" "+rs.getString("publisherAddress")+" "+rs.getString("publisherPhone"));
+		}
+		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storePublisher.size();j++){
+			System.out.println((j+1)+") "+ storePublisher.get(j));
+		}
+		
+		System.out.println("SELECT the Publisher id that you want to update");
+		String pubSelectedId = scanner.next();
+		
+		System.out.println("Enter the New Name of Publisher or N/A");
+		String newName = reader.readLine();
+		System.out.println("Enter the new address of publisher or N/A");
+		String newAddress = reader.readLine();
+		System.out.println("Enter the New phone of Publisher or N/A");
+		String NewPhone = reader.readLine();
+		
+		for (int i=0; i < storePublisher.size();i++){
+			String[] splitstr = storePublisher.get(i).split(" "); 
+			if (pubSelectedId.equals(splitstr[0])){
+				
+				query = "UPDATE tbl_publisher SET publisherName='"+newName+"'"
+						+ ", publisherAddress='"+newAddress+"',publisherPhone='"+NewPhone+"' WHERE publisherId="+pubSelectedId+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Publisher UPdated Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		publishers();
+	}
+	private void deletePublisher() throws SQLException, IOException{
+		
+		String query ="";
+		ArrayList<String> storePublisher= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_publisher";
+		
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storePublisher.add(rs.getInt("publisherId")+" "+rs.getString("publisherName")
+					+" "+rs.getString("publisherAddress")+" "+rs.getString("publisherPhone"));
+		}
+		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storePublisher.size();j++){
+			System.out.println((j+1)+") "+ storePublisher.get(j));
+		}
+		System.out.println("SELECT the Publisher id that you want to Delete");
+		String pubSelectedId = scanner.next();
+		
+		for (int i=0; i < storePublisher.size();i++){
+			String[] splitstr = storePublisher.get(i).split(" "); 
+			if (pubSelectedId.equals(splitstr[0])){
+				
+				query = "DELETE FROM tbl_publisher WHERE publisherId="+pubSelectedId+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Publisher Deleted Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		publishers();
+	}
+	public void libraryBranch() throws IOException, SQLException{
 		
 		System.out.println("What operation do you wish to perform?");
 		System.out.println("1) Add");
@@ -409,36 +580,277 @@ public class Administrator {
 		
 		switch(option){
 		
-		case(1):
-		case(2):
-		case(3):
-		case(4):
+		case(1):addLibrary();
+				break;
+		case(2):updateLibrary();
+				break;
+		case(3):deleteLibrary();
+				break;
+		case(4):adminDisplay();
+				break;
+		}
+		
+	}
+	
+	
+	private void addLibrary() throws IOException, SQLException{
+		
+		System.out.println("Enter the Branch Name that you want to add");
+		String branchName = reader.readLine();
+		System.out.println("Enter the address of branch that you want to add");
+		String branchAddress = reader.readLine();
+		
+		String query="";
+		Statement stmt;
+		Connection conn = JDBCConnect.getConnection();
+		
+		stmt = conn.createStatement();
+		
+		query = "INSERT INTO tbl_library_branch(branchName, branchAddress) VALUES ('"+branchName+"','"+branchAddress+"');";
+		int rs = stmt.executeUpdate(query);
+		if (rs ==1){System.out.println("New Branch added");}
+		
+		conn.commit();
+		conn.close();
+		libraryBranch();
+	}
+	
+	private void updateLibrary() throws SQLException, IOException{
+		
+		String query ="";
+		ArrayList<String> storeLibrary= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_library_branch";
+		
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storeLibrary.add(rs.getInt("branchId")+" "+rs.getString("branchName")
+					+" "+rs.getString("branchAddress"));
+		}
+		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storeLibrary.size();j++){
+			System.out.println((j+1)+") "+ storeLibrary.get(j));
+		}
+		
+		System.out.println("SELECT the Branch id that you want to update");
+		String libBranchId = scanner.next();
+		
+		System.out.println("Enter the New Name of Library Branch or N/A");
+		String newName = reader.readLine();
+		System.out.println("Enter the new address of Library Branch or N/A");
+		String newAddress = reader.readLine();
+		
+		for (int i=0; i < storeLibrary.size();i++){
+			String[] splitstr = storeLibrary.get(i).split(" "); 
+			if (libBranchId.equals(splitstr[0])){
+				
+				query = "UPDATE tbl_library_branch SET branchName='"+newName+"'"
+						+ ", branchAddress='"+newAddress+"' WHERE branchId="+libBranchId+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Library Branch UPdated Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		libraryBranch();
+		
+	}
+	
+	private void deleteLibrary() throws SQLException, IOException{
+		
+		String query ="";
+		ArrayList<String> storeLibrary= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_library_branch";
+		
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storeLibrary.add(rs.getInt("branchId")+" "+rs.getString("branchName")
+					+" "+rs.getString("branchAddress"));
+		}
+		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storeLibrary.size();j++){
+			System.out.println((j+1)+") "+ storeLibrary.get(j));
+		}
+		
+		System.out.println("SELECT the Branch id that you want to Delete");
+		String libBranchId = scanner.next();
+		
+		System.out.println("Enter the New Name of Library Branch or N/A");
+		String newName = reader.readLine();
+		System.out.println("Enter the new address of Library Branch or N/A");
+		String newAddress = reader.readLine();
+		
+		for (int i=0; i < storeLibrary.size();i++){
+			String[] splitstr = storeLibrary.get(i).split(" "); 
+			if (libBranchId.equals(splitstr[0])){
+				
+				query = "DELETE FROM tbl_library_branch WHERE branchId="+libBranchId+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Library Branch Deleted Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		libraryBranch();
+	}
+	
+	public void borrowers() throws IOException, SQLException{
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):addBorrower();
+		break;
+		case(2):updateBorrower();
+				break;
+		case(3):deleteBorrower();
+				break;
+		case(4):adminDisplay();
 			
 		}
 		
 	}
 	
-	public void borrowers(){
+	private void addBorrower() throws IOException, SQLException{
+		System.out.println("Enter the publisher Name");
+		String name = reader.readLine();
+		System.out.println("Enter the address of Publisher");
+		String address = reader.readLine();
+		System.out.println("Enter the Phone number of Publisher");
+		String phoneNumber = reader.readLine();
+		String query ="";
 		
-		System.out.println("What operation do you wish to perform?");
-		System.out.println("1) Add");
-		System.out.println("2) Update");
-		System.out.println("3) Delete");
-		System.out.println("4) Quit to Previous");
+		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "INSERT INTO tbl_borrower (name,address,phone) "
+				+ "VALUES ('"+name+"','"+address+"','"+phoneNumber+"');";
 		
-		int option =0;
-		option = scanner.nextInt();
+		int rs = stmt.executeUpdate(query);
+		if (rs ==1){System.out.println("Publisher table inserted");}
+		conn.commit();
+		conn.close();
+		borrowers();
+	}
+	private void updateBorrower() throws SQLException, IOException{
 		
-		switch(option){
+		String query ="";
+		ArrayList<String> storeborrower= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_borrower";
 		
-		case(1):
-		case(2):
-		case(3):
-		case(4):
-			
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storeborrower.add(rs.getInt("cardNo")+" "+rs.getString("name")
+					+" "+rs.getString("address")+" "+rs.getString("phone"));
 		}
 		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storeborrower.size();j++){
+			System.out.println((j+1)+") "+ storeborrower.get(j));
+		}
+		
+		System.out.println("SELECT the Branch id that you want to update");
+		String cardNo = scanner.next();
+		
+		System.out.println("Enter the New Name or N/A");
+		String newName = reader.readLine();
+		System.out.println("Enter the new address or N/A");
+		String newAddress = reader.readLine();
+		System.out.println("Enter the new Phone NUmber or N/A");
+		String newPhone = reader.readLine();
+		
+		for (int i=0; i < storeborrower.size();i++){
+			String[] splitstr = storeborrower.get(i).split(" "); 
+			if (cardNo.equals(splitstr[0])){
+				
+				query = "UPDATE tbl_borrower SET name='"+newName+"'"
+						+ ", address='"+newAddress+"', phone ='"+newPhone+"' WHERE cardNo="+cardNo+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Borrower UPdated Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		libraryBranch();
+		
 	}
+	private void deleteBorrower() throws SQLException, IOException{
+		
+		String query ="";
+		ArrayList<String> storeborrower= new ArrayList<String> ();
+ 		Connection conn = JDBCConnect.getConnection();
+		Statement stmt;
+		stmt = conn.createStatement();
+		query = "SELECT * FROM tbl_borrower";
+		
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			storeborrower.add(rs.getInt("cardNo")+" "+rs.getString("name")
+					+" "+rs.getString("address")+" "+rs.getString("phone"));
+		}
+		
+		//int i;
+		//storePublisher.forEach(s ->System.out.println(") "+s));
+		for (int j =0; j <storeborrower.size();j++){
+			System.out.println((j+1)+") "+ storeborrower.get(j));
+		}
+		
+		System.out.println("SELECT the Branch id that you want to update");
+		String cardNo = scanner.next();
+		
+		for (int i=0; i < storeborrower.size();i++){
+			String[] splitstr = storeborrower.get(i).split(" "); 
+			if (cardNo.equals(splitstr[0])){
+				
+				query = "DELETE FROM tbl_borrower  WHERE cardNo="+cardNo+";";
+				
+				int rs1 = stmt.executeUpdate(query);
+				if (rs1 == 1){
+					System.out.println("Borrower Deleted Successfully");
+				}
+			}
+		}
+		
+		conn.commit();
+		conn.close();
+		libraryBranch();
+		
+	}
+	
+	
 	
 	public void overrideDueDate(){
 		
