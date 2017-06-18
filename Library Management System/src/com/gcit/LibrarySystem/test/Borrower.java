@@ -206,7 +206,17 @@ public class Borrower {
 		return listCardNo;
 	}
 	
-	public String bookCopies(){
+	public String bookCopies() throws SQLException{
+		
+		Connection conn = JDBCConnect.getConnection();
+		
+		Statement statement;
+		String query="";
+		
+		statement = conn.createStatement();
+		query= "";
+		
+		
 		
 		return null;
 	}

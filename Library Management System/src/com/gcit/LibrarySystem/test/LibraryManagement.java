@@ -15,6 +15,7 @@ public class LibraryManagement {
 	
 	Scanner scanner  = new Scanner(System.in);
 	Borrower borrower = new Borrower();
+	Administrator administrator = new Administrator(); 
 	BufferedReader reader = 
             new BufferedReader(new InputStreamReader(System.in));
 	
@@ -30,13 +31,12 @@ public class LibraryManagement {
 		System.out.println("4) Quit");
 		
 		i = scanner.nextInt();
-		
 		switch (i){
 			
 		case(1):libDisplay1();
 				break;
 			
-		case(2):adminDisplay();
+		case(2):administrator.adminDisplay();
 				break;
 			
 		case(3):borrower.borrowerDisplay();
@@ -47,10 +47,7 @@ public class LibraryManagement {
 		}
 	}
 	
-	public void adminDisplay(){
-		
-		System.out.println("Admin");
-	}
+	
 	public String libDisplay1() throws IOException, SQLException{
 		int i=0; 
 		System.out.println("Enter the suitable associated number to the option you want to select ");
