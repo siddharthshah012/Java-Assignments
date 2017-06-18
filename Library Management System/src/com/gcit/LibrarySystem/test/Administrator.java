@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Administrator {
@@ -121,6 +123,7 @@ public class Administrator {
 					System.out.println("Executed successfully 1" );
 				}
 					
+				@SuppressWarnings("unused")
 				int rs1 = statement.executeUpdate(query1);
 				conn1.commit();
 				int bookId = 0, authorId = 0;
@@ -221,9 +224,7 @@ public class Administrator {
 	public void updateBookandAuthor() throws SQLException, IOException{	
 		
 		String query="";
-		String query1="";
-		String query2="";
-		String query3="";
+		
 		
 		Connection conn = JDBCConnect.getConnection();
 
@@ -310,9 +311,7 @@ public class Administrator {
 	public void deleteBookandAuthor() throws SQLException, IOException{
 		
 		String query="";
-		String query1="";
-		String query2="";
-		String query3="";
+		
 		
 		Connection conn = JDBCConnect.getConnection();
 
@@ -688,11 +687,6 @@ public class Administrator {
 		System.out.println("SELECT the Branch id that you want to Delete");
 		String libBranchId = scanner.next();
 		
-		System.out.println("Enter the New Name of Library Branch or N/A");
-		String newName = reader.readLine();
-		System.out.println("Enter the new address of Library Branch or N/A");
-		String newAddress = reader.readLine();
-		
 		for (int i=0; i < storeLibrary.size();i++){
 			String[] splitstr = storeLibrary.get(i).split(" "); 
 			if (libBranchId.equals(splitstr[0])){
@@ -772,8 +766,7 @@ public class Administrator {
 					+" "+rs.getString("address")+" "+rs.getString("phone"));
 		}
 		
-		//int i;
-		//storePublisher.forEach(s ->System.out.println(") "+s));
+	
 		for (int j =0; j <storeborrower.size();j++){
 			System.out.println((j+1)+") "+ storeborrower.get(j));
 		}
@@ -828,7 +821,7 @@ public class Administrator {
 			System.out.println((j+1)+") "+ storeborrower.get(j));
 		}
 		
-		System.out.println("SELECT the Branch id that you want to update");
+		System.out.println("SELECT the Cardno that you want to Delete");
 		String cardNo = scanner.next();
 		
 		for (int i=0; i < storeborrower.size();i++){
@@ -851,9 +844,54 @@ public class Administrator {
 	}
 	
 	
-	
-	public void overrideDueDate(){
+	public void overrideDueDate() throws SQLException{
 		
+		String query="";
+		Connection conn = JDBCConnect.getConnection();
+		ArrayList<String> storeBookLoan = new ArrayList<String> ();
+		Statement statement;
+		
+		statement= conn.createStatement();
+		
+		query ="select * from tbl_book_loans WHERE dueDate> curdate() and dateOut is not null;";
+		
+		ResultSet rs = statement.executeQuery(query);
+		while(rs.next()){
+			storeBookLoan.add(rs.getInt("bookId")+" "+rs.getInt("branchId")+" "+rs.getInt("cardNo")+" "+
+								rs.getDate("dateOut")+" "+rs.getDate("dueDate")+" "+rs.getDate("dateIn"));			
+		}
+		
+		for (int i =0; i < storeBookLoan.size(); i++){
+			System.out.println((i+1)+") "+storeBookLoan.get(i));
+		}
+		
+		System.out.println("Please Enter folllowing details to override due date");
+		System.out.println("Enter Book id:");
+		String bookId = scanner.next();
+		System.out.println("Enter Branch id:");
+		String branchId = scanner.next();
+		System.out.println("Enter Card no: ");
+		String cardNo = scanner.next();
+		
+		System.out.println("Enter to which date you want to extend");
+		int extendDay = scanner.nextInt();
+		if (extendDay < 0 && extendDay> 30){overrideDueDate();}
+		
+		for (int i =0; i < storeBookLoan.size(); i++){
+			//System.out.println((i+1)+") "+storeBookLoan.get(i));
+			String[] splitstr = storeBookLoan.get(i).split(" ");
+			if (splitstr[0].equals(bookId) && splitstr[1].equals(branchId) && splitstr[2].equals(cardNo)){
+				
+				query ="UPDATE tbl_book_loans SET dueDate=ADDDATE(dueDate,"+ extendDay+")"
+						+ " WHERE bookId ="+bookId+" and branchId="+branchId+" and cardNo="+ cardNo+";";
+				
+				int rs2 = statement.executeUpdate(query);
+				if (rs2 ==1){System.out.println("Updated succesfully");}
+				
+			}
+		}
+		conn.commit();
+		conn.close();
 	}
 	
 	
