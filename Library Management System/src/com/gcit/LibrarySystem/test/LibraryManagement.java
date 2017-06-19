@@ -30,22 +30,21 @@ public class LibraryManagement {
 		System.out.println("4) QUIT");
 		
 		i = scanner.nextInt();
-		switch (i){
-			
-		case(1):libDisplay1();
-				break;
-		case(2):administrator.adminDisplay();
-				break;
-			
-		case(3):borrower.borrowerDisplay();
-				break;
-				
-		case(4):return;
-		
-		default:mainDisplay();
-				break;
-		
+		while (i>0 && i< 5){
+			switch (i){
+			case(1):libDisplay1();
+					break;
+			case(2):administrator.adminDisplay();
+					break;
+			case(3):borrower.borrowerDisplay();
+					break;	
+			case(4):System.exit(0);
+			default:mainDisplay();
+					break;
+			}
 		}
+		System.out.println("Please Enter a valid Number");
+		mainDisplay();
 	}
 	
 	
@@ -148,34 +147,55 @@ public class LibraryManagement {
 		String newBranchName;
 		String newBranchAddress;
 		switch(i){
-		case(1):System.out.println("You have chosen to update the Branch with Branch Id: "+splitStr[0]+" and Branch Name: "+splitStr[1]);
+		case(1):System.out.println("YOU HAVE CHOSEN TO UPDATE BRANCH WITH BRANCH ID: "+splitStr[0]+" AND BRANCH NAME: "+splitStr[1]);
 				
-				System.out.println("Please enter new branch name or enter N/A for no change:");
-				newBranchName = reader.readLine();
-				String notApp="N/A";
-				if (newBranchName.equalsIgnoreCase(notApp)){
-					newBranchName = splitStr[1];
-				}
-				System.out.println("Please enter new branch address or enter N/A for no change:");
-				newBranchAddress = reader.readLine();
-				if (newBranchAddress.equalsIgnoreCase(notApp)){
-					newBranchAddress = splitStr[2];
-				}
-				String query ="";
+				
+				
+				String queryName ="";
+				String queryAddress="";
 				Statement stmt;
 				
 				try {
+					System.out.println("PLEASE ENTER A NEW BRANCH NAME OR TYPE N/A");
+					newBranchName = reader.readLine();
+					String notApp="N/A";
+					if (newBranchName.equalsIgnoreCase(notApp)){
+						newBranchName = splitStr[1];
+					}
 					stmt = conn.createStatement();
-					query = "UPDATE tbl_library_branch SET branchName = '"+ newBranchName+"', branchAddress = '"+newBranchAddress+
-							"' WHERE branchId = "+splitStr[0]+";";
-					int rs = stmt.executeUpdate(query);
-					if (rs == 1){
-						
-						System.out.println("Successfully Updated "+rs+" row");
+					queryName = "UPDATE tbl_library_branch SET branchName = '"+ newBranchName+"' WHERE branchId = "+splitStr[0]+";";
+					int rs = stmt.executeUpdate(queryName);
+					
+					
+					System.out.println("DO YOU WISH TO QUIT TO CANCEL OPERATION PRESS 1 FOR YES AND 2 FOR NO");
+					int checkYesNo = scanner.nextInt();
+					
+					if (checkYesNo == 1){
+						conn.close();
+						libDisplay3(s);
 					}
-					else{
-						System.out.println("Successfully Updated "+rs+" row");
+					
+					System.out.println("PLEASE ENTER A NEW BRANCH ADDRESS OR TYPE N/A");
+					newBranchAddress = reader.readLine();
+					if (newBranchAddress.equalsIgnoreCase(notApp)){
+						newBranchAddress = splitStr[2];
 					}
+					
+					queryAddress = "UPDATE tbl_library_branch SET branchAddress='"+newBranchAddress+"' WHERE branchId="+splitStr[0]+";";
+					
+					int rsAddress = stmt.executeUpdate(queryAddress);
+					
+					System.out.println("DO YOU WISH TO QUIT TO CANCEL OPERATION PRESS 1 FOR YES AND 2 FOR NO");
+					int checkYesNo1 = scanner.nextInt();
+					
+					if (checkYesNo1 == 1){
+						conn.close();
+						libDisplay3(s);
+					}
+					if (rsAddress==1 && rs == 1 ){
+						System.out.println("Successfully Updated "+rsAddress+" row");
+					}
+					
 					conn.commit();
 					
 
@@ -194,7 +214,7 @@ public class LibraryManagement {
 				libDisplay3(s);
 				break;
 				
-		case(2):System.out.println("Pick the Book you want to add copies of, to your branch:");
+		case(2):System.out.println("PICK THE BOOK, YOU WANT TO ADD COPIES OF");
 				
 				String query1 ="";
 				Statement stmt1 = null;
@@ -207,7 +227,6 @@ public class LibraryManagement {
 				
 					ResultSet rs1 = stmt1.executeQuery(query1);
 					while(rs1.next()){
-					
 						listBookNames.add(rs1.getInt("bookId")+","+rs1.getString("title")+","+rs1.getString("authorName"));
 					}
 					//conn.commit();
@@ -225,10 +244,10 @@ public class LibraryManagement {
 					System.out.println(splitStr1[2]);
 				}
 				
-				System.out.println((listBookNames.size()+1)+") Quit to Previous Menu");
+				System.out.println((listBookNames.size()+1)+") QUIT TO PREVIOUS MENU");
 				
 				
-				System.out.println("Enter the number ");
+				System.out.println("SELECT AND ENTER THE NUMBER");
 				int selectedNumber=0;
 				selectedNumber = scanner.nextInt();
 				//ArrayList<Integer> selectedStringCount = new ArrayList<Integer>();
@@ -294,7 +313,7 @@ public class LibraryManagement {
 						}	
 					}
 					else{
-						System.out.println("Please enter a suitable number");
+						System.out.println("PLEASE ENTER A SUITABLE NUMBER");
 						libDisplay3(s);
 					}
 				}
@@ -303,14 +322,13 @@ public class LibraryManagement {
 		case(3):libDisplay2();
 				break;
 		default:
-		}
-		
+		}	
 	}
-	
 	public static void main(String[] args) throws IOException, SQLException {
 		// TODO Auto-generated method stub
 		LibraryManagement lm = new LibraryManagement();
 		lm.mainDisplay();
+		
 		
 	}
 
