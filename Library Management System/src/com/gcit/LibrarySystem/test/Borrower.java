@@ -25,8 +25,8 @@ public class Borrower {
 		String address;
 		Long phone;*/
 		
-		System.out.println("borrower");
-		System.out.println("Please enter your Card Number ");
+		//System.out.println("borrower");
+		System.out.println("PLEASE ENTER YOUR CARD NUMBER");
 		/*
 		BigInteger check = new BigInteger("99999999999");
 		String cardNumber = scanner.next();
@@ -35,7 +35,7 @@ public class Borrower {
 		long check = 99999999999L;
 		long cardNumber = scanner.nextLong();
 		if (cardNumber > check  || cardNumber < 0){
-			System.out.println("Please Enter correct card number in the range of 1 to 99999999999");
+			System.out.println("PLEASE ENTER THE CORRECT CARD NUMBER IN THE RANGE OF 1 TO 99999999999"); 
 			borrowerDisplay();
 		}
 		
@@ -43,9 +43,9 @@ public class Borrower {
 		returnListCardNo = borrowerIds();
 		boolean value = true;
 		//returnListCardNo.forEach(s-> System.out.println(s));
-		for (int i=0; i< returnListCardNo.size();i++){
+		/*for (int i=0; i< returnListCardNo.size();i++){
 			System.out.println(returnListCardNo.get(i));
-		}
+		}*/
 		
 		for (int i=0; i< returnListCardNo.size();i++){
 			
@@ -63,9 +63,9 @@ public class Borrower {
 		if (value == true){
 			
 			System.out.println("PLease select a number corresponding to the option you want: ");
-			System.out.println("1)	Check out a book");
-			System.out.println("2)	Return a Book");
-			System.out.println("3)	Quit to Previous ");
+			System.out.println("1)	CHECK OUT A BOOK");
+			System.out.println("2)	RETURN A BOOK");
+			System.out.println("3)	QUIT TO PREVIOUS ");
 			
 			int inputValue =0;
 			inputValue = scanner.nextInt();
@@ -141,7 +141,7 @@ public class Borrower {
 		Statement stmt;
 		
 		stmt = conn.createStatement();
-		query = "select * from tbl_library_branch order by branchId ";
+		query = "SELECT * FROM tbl_library_branch ORDER BY branchId ";
 		ResultSet rs = stmt.executeQuery(query);
 		while(rs.next()){
 			listBranchNames.add(rs.getInt("branchId")+","+rs.getString("branchName")+","+ rs.getString("branchAddress"));
@@ -154,9 +154,9 @@ public class Borrower {
 			System.out.print(splitStr[1]+",");
 			System.out.println(splitStr[2]);
 		}
-		System.out.println((listBranchNames.size()+1)+") Quit to Previous Menu");
+		System.out.println((listBranchNames.size()+1)+") QUIT TO PREVIOUS MENU");
 		
-		System.out.println("Enter the number ");
+		System.out.println("ENTER THE NUMBER");
 		int selectedNumber=0;
 		selectedNumber = scanner.nextInt();
 		
@@ -176,7 +176,7 @@ public class Borrower {
 				}
 			}
 			else{
-				System.out.println("Please enter a suitable number");
+				System.out.println("PLEASE ENTER A SUITABLE NUMBER");
 				checkOutBook(cardNumber);
 			}
 		}
@@ -334,9 +334,9 @@ public class Borrower {
 		Timestamp varStore = null;
 		int x=0;
 		while(x<storeDateOut.size()){
-			System.out.println(storeDateOut.size());
+			//System.out.println(storeDateOut.size());
 			if (selectNumber == (x+1)){
-				System.out.println(selectNumber +" "+ (x+1));
+				//System.out.println(selectNumber +" "+ (x+1));
 				varBookId =storeBookId.get(x);
 				varStore= storeDateOut.get(x);	
 			}

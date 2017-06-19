@@ -404,6 +404,7 @@ public class Administrator {
 		case(4):adminDisplay();
 				break;
 			default:adminDisplay();
+			break;
 			
 		}
 	}
@@ -448,7 +449,7 @@ public class Administrator {
 				System.out.println((i+1)+") "+storeBookTable.get(i));
 			}
 			System.out.println("Enter accordingly book id or book title");
-			System.out.println("Enter The book Title");
+			System.out.println("Enter The book Id");
 			String bookTitle = reader.readLine();
 			
 			query ="SELECT publisherId from tbl_publisher WHERE publisherName ='"+pubName+"' order by publisherId desc;";
@@ -461,9 +462,9 @@ public class Administrator {
 			for (int j=0; j<storeBookTable.size();j++){
 				String[] splitstr = storeBookTable.get(j).split(" ");
 				
-				if (bookTitle.equals(splitstr[1])){
+				if (bookTitle.equals(splitstr[0])){
 					
-					query = "UPDATE tbl_book SET pubId = "+pubId+" WHERE title ='"+bookTitle+"'; " ;
+					query = "UPDATE tbl_book SET pubId = "+pubId+" WHERE bookId ='"+bookTitle+"'; " ;
 					
 					int rs3 = statement.executeUpdate(query);
 					if (rs3 ==1){
@@ -590,6 +591,8 @@ public class Administrator {
 				break;
 		case(4):adminDisplay();
 				break;
+		default:adminDisplay();
+						break;
 		}
 		
 	}
@@ -728,6 +731,9 @@ public class Administrator {
 		case(3):deleteBorrower();
 				break;
 		case(4):adminDisplay();
+				break;
+		default:adminDisplay();
+				break;
 			
 		}
 		
@@ -769,7 +775,6 @@ public class Administrator {
 					+" "+rs.getString("address")+" "+rs.getString("phone"));
 		}
 		
-	
 		for (int j =0; j <storeborrower.size();j++){
 			System.out.println((j+1)+") "+ storeborrower.get(j));
 		}
@@ -847,7 +852,7 @@ public class Administrator {
 	}
 	
 	
-	public void overrideDueDate() throws SQLException{
+	public void overrideDueDate() throws SQLException, IOException{
 		
 		String query="";
 		Connection conn = JDBCConnect.getConnection();
@@ -895,5 +900,6 @@ public class Administrator {
 		}
 		conn.commit();
 		conn.close();
+		borrowers();
 	}
 }
