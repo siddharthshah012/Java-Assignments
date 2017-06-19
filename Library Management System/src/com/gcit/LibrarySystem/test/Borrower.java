@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.Scanner;
 
 public class Borrower {
@@ -20,10 +20,10 @@ public class Borrower {
 	
 	public void borrowerDisplay() throws IOException, SQLException{
 		LibraryManagement lms = new LibraryManagement();
-		
+		/*
 		String name;
 		String address;
-		Long phone;
+		Long phone;*/
 		
 		System.out.println("borrower");
 		System.out.println("Please enter your Card Number ");
@@ -211,19 +211,6 @@ public class Borrower {
 				
 			}
 		}
-		/*
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		//String S = timestamp;
-		
-		Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp2);
-		cal.add(Calendar.DAY_OF_WEEK, 7);
-		timestamp.setTime(cal.getTime().getTime()); // or
-		timestamp2 = new Timestamp(cal.getTime().getTime());
-		
-		System.out.println("CUrr: "+timestamp+" 1week :"+timestamp2);*/
-		
 		
 		query="INSERT INTO tbl_book_loans VALUES "
 				+ "("+id+","+splitstr[0]+","+cardNumber+",NOW(),NOW()+interval 1 week, null);";
@@ -267,28 +254,13 @@ public class Borrower {
 		return listCardNo;
 	}
 	
-	public String bookCopies() throws SQLException{
-		
-		Connection conn = JDBCConnect.getConnection();
-		
-		Statement statement;
-		String query="";
-		
-		statement = conn.createStatement();
-		query= "";
-		
-		
-		
-		return null;
-	}
-	
 	public void returnBook(long cardNumber) throws SQLException, IOException{
 		
 		Connection conn =JDBCConnect.getConnection();
 		ArrayList<String> listBranchNames = new ArrayList<String>();
 		
 		String query ="";
-		String query1="";
+		//String query1="";
 		
 		Statement stmt;
 		
@@ -390,8 +362,6 @@ public class Borrower {
 		if (rs5== 1){
 			
 		}
-		
-		
 		conn1.commit();
 		conn1.close();
 		

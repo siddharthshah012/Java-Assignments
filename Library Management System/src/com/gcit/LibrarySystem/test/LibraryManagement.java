@@ -20,22 +20,20 @@ public class LibraryManagement {
             new BufferedReader(new InputStreamReader(System.in));
 	
 	public void mainDisplay() throws IOException, SQLException{
-		
-		
 		int i = 0;
 		
-		System.out.println("Welcome to the GCIT Library Management System. Which category of a user are you");
-		System.out.println("1) Librarian");
-		System.out.println("2) Administrator");
-		System.out.println("3) Borrower");
-		System.out.println("4) Quit");
+		System.out.println("WELCOME TO THE GCIT LIBRARY MANAGEMENT SYSTEM!!!");
+		System.out.println("WHICH CATEGORY USER ARE YOU ?");
+		System.out.println("1) LIBRARIAN");
+		System.out.println("2) ADMINISTRATOR");
+		System.out.println("3) BORROWER");
+		System.out.println("4) QUIT");
 		
 		i = scanner.nextInt();
 		switch (i){
 			
 		case(1):libDisplay1();
 				break;
-			
 		case(2):administrator.adminDisplay();
 				break;
 			
@@ -43,6 +41,9 @@ public class LibraryManagement {
 				break;
 				
 		case(4):return;
+		
+		default:mainDisplay();
+				break;
 		
 		}
 	}
@@ -61,6 +62,8 @@ public class LibraryManagement {
 				break;
 		case(2):mainDisplay();
 				break;
+			default:mainDisplay();
+					break;
 		}
 		return null;
 	}
@@ -70,18 +73,14 @@ public class LibraryManagement {
 		
 		Connection conn =JDBCConnect.getConnection();
 		ArrayList<String> listBranchNames = new ArrayList<String>();
-		
 		String query = "";
 		Statement stmt;
 		try {
-			
 			stmt = conn.createStatement();
 			query = "select * from tbl_library_branch order by branchId ";
 			ResultSet rs = stmt.executeQuery(query);
 			while(rs.next()){
-				
 				listBranchNames.add(rs.getInt("branchId")+","+rs.getString("branchName")+","+ rs.getString("branchAddress"));
-				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -97,8 +96,6 @@ public class LibraryManagement {
 				}
 			}
 		}
-		
-		//listBranchNames.forEach(s -> System.out.println(s));
 		for (int i = 0; i < listBranchNames.size(); i++) {
 			
 			String[] splitStr = listBranchNames.get(i).split(",");
@@ -106,9 +103,9 @@ public class LibraryManagement {
 			System.out.print(splitStr[1]+",");
 			System.out.println(splitStr[2]);
 		}
-		System.out.println((listBranchNames.size()+1)+") Quit to Previous Menu");
+		System.out.println((listBranchNames.size()+1)+") QUIT TO PREVIOUS MENU");
 		
-		System.out.println("Enter the number ");
+		System.out.println("SELECT AND ENTER THE NUMBER TO PROCEED");
 		int selectedNumber=0;
 		selectedNumber = scanner.nextInt();
 		
@@ -126,7 +123,7 @@ public class LibraryManagement {
 				}
 			}
 			else{
-				System.out.println("Please enter a suitable number");
+				System.out.println("PLEASE ENTER A SUITABLE NUMBER");
 				libDisplay2();
 			}
 			
@@ -141,10 +138,10 @@ public class LibraryManagement {
 		String[] splitStr = s.split(",");
 		ArrayList<String> listBookNames = new ArrayList<String>();
 		
-		System.out.println("Please enter the suitable number acc to your selection");
-		System.out.println("1)	Update the details of the Library");
-		System.out.println("2)	Add copies of Book to the Branch");
-		System.out.println("3)	Quit to previous");
+		System.out.println("SELECT AND ENTER A NUMBER TO PROCEED");
+		System.out.println("1)	UPDATE THE DETAILS OF THE LIBRARY");
+		System.out.println("2)	ADD COPIES OF BOOK TO THE LIBRARY");
+		System.out.println("3)	QUIT TO PREVIOUS MENU");
 		int i=0;
 		i = scanner.nextInt();
 		
@@ -194,6 +191,7 @@ public class LibraryManagement {
 						e.printStackTrace();
 					}
 				}
+				libDisplay3(s);
 				break;
 				
 		case(2):System.out.println("Pick the Book you want to add copies of, to your branch:");
@@ -307,19 +305,13 @@ public class LibraryManagement {
 		default:
 		}
 		
-		//System.out.println(s);
-		
 	}
 	
-	
-
 	public static void main(String[] args) throws IOException, SQLException {
 		// TODO Auto-generated method stub
 		LibraryManagement lm = new LibraryManagement();
 		lm.mainDisplay();
 		
-		
-
 	}
 
 }

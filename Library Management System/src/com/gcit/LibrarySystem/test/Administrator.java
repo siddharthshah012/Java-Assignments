@@ -7,9 +7,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
 import java.util.Scanner;
 
 public class Administrator {
@@ -20,16 +20,15 @@ public class Administrator {
 
 	public void adminDisplay() throws IOException, SQLException{
 		LibraryManagement lms = new LibraryManagement();
-		System.out.println("Admin");
-		System.out.println("1)	Add/Update/Delete Book and Author");
-		System.out.println("2)	Add/Update/Delete Publishers");
-		System.out.println("3)	Add/Update/Delete Library Branches");
-		System.out.println("4)	Add/Update/Delete Borrowers");
-		System.out.println("5)	Over-ride Due Date for a Book Loan");
-		System.out.println("6)  Quit to previous menu");
+		System.out.println("************ADMINISTRATOR DISPLAY****************");
+		System.out.println("1)	ADD/UPDATE/DELETE BOOK AND AUTHOR");
+		System.out.println("2)	ADD/UPDATE/DELETE PUBLISHER");
+		System.out.println("3)	ADD/UPDATE/DELETE LIBRARY BRANCHES");
+		System.out.println("4)	ADD/UPDATE/DELETE BORROWERS");
+		System.out.println("5)	OVER-RIDE DUE DATE FOR A BOOK LOAN");
+		System.out.println("6)	QUIT TO PREVIOUS MENU");
 		
-		int option =0;
-		
+		int option =0;							//Used to take input
 		option = scanner.nextInt();
 		
 		switch(option){
@@ -45,7 +44,8 @@ public class Administrator {
 		case(5):overrideDueDate();
 				break;
 		case(6):lms.mainDisplay();
-		default:
+				break;
+		default:lms.mainDisplay();
 		}
 		
 		
@@ -53,11 +53,11 @@ public class Administrator {
 	
 	public void bookandAuthor() throws IOException, SQLException{
 		
-		System.out.println("What operation do you wish to perform?");
-		System.out.println("1) Add");
-		System.out.println("2) Update");
-		System.out.println("3) Delete");
-		System.out.println("4) Quit to Previous");
+		System.out.println("WHAT OPERATION DO YOU WISH TO PERFORM?");
+		System.out.println("1) ADD");
+		System.out.println("2) UPDATE");
+		System.out.println("3) DELETE");
+		System.out.println("4) QUIT TO PREVIOUS MENU");
 		
 		int option =0;
 		option = scanner.nextInt();
@@ -78,11 +78,11 @@ public class Administrator {
 	}
 	public void addBookandAuthor() throws IOException, SQLException{
 	
-		System.out.println("Do you wish to Associate author with the book?");
-		System.out.println("1) Yes");
-		System.out.println("2) No");
-		System.out.println("3) Add Only Author Name");
-		System.out.println("4) add only Book title");
+		System.out.println("DO YOU WISH TO ASSOCIATE AUTHOR WITH THE BOOK");
+		System.out.println("1) YES");
+		System.out.println("2) NO");
+		System.out.println("3) ADD ONLY AUTHOR NAME");
+		System.out.println("4) ADD ONLY BOOK TITLE");
 		int acceptDecline;
 		acceptDecline = scanner.nextInt();
 		String query="";
@@ -109,32 +109,33 @@ public class Administrator {
 				addAuthor = reader.readLine();
 				
 				query = "INSERT INTO tbl_book(title) VALUES ('"+addBook+"');";
-				
+
 				query1 = "INSERT INTO tbl_author(authorName) Values ('"+addAuthor+"');";
 				
 				query2 = "Select bookId,authorId FROM tbl_book,tbl_author "
 						+ "WHERE tbl_book.title='"+addBook+"' and tbl_author.authorName='"+addAuthor+"'"
 						+ "order by bookId desc,authorId desc limit 1;";
-				int rs;
 				
+				int rs;
 				rs = statement.executeUpdate(query);
 				conn1.commit();
 				if (rs ==1){
-					System.out.println("Executed successfully 1" );
+					System.out.println("Inserted record  into tbl_book successfully" );
 				}
 					
-				@SuppressWarnings("unused")
 				int rs1 = statement.executeUpdate(query1);
+				if (rs1 ==1){
+					System.out.println("Inserted record into tbl_author successfully ");
+				}
 				conn1.commit();
 				int bookId = 0, authorId = 0;
 				ResultSet rs2 = statement.executeQuery(query2);
 				conn1.commit();
-				System.out.println("Jai ho");
 				while (rs2.next()){
 					bookId = rs2.getInt("bookId");
 					authorId=rs2.getInt("authorId");
 				}
-				System.out.println("jai ho 1");
+				//System.out.println("jai ho 1");
 				conn1.commit();
 				conn1.close();
 				
@@ -153,16 +154,16 @@ public class Administrator {
 				break;
 				
 	
-		case(2):System.out.println("Enter the Book name to add or enter N/A");
+		case(2):System.out.println("ENTER THE NAME OF BOOK TO ADD OR ENTER N/A");
 				String addBook1 = "";
 				addBook1 = reader.readLine();
 		
-				System.out.println("Enter the Name of Author to add or enter N/A");
+				System.out.println("ENTER THE NAME OF AUTHOR TO ADD OR ENTER N/A");
 				String addAuthor1="";
 				addAuthor1 = reader.readLine();
 				
 				query = "INSERT INTO tbl_book(title) VALUES ('"+addBook1+"');";
-				query1 ="INSERT INTO tbl_author(authorName) Values ('"+addAuthor1+"');";
+				query1 ="INSERT INTO tbl_author(authorName) VALUES ('"+addAuthor1+"');";
 				try {
 					statement.executeUpdate(query);
 					statement.executeUpdate(query1);
@@ -170,7 +171,6 @@ public class Administrator {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}finally {
-					
 					try {
 						conn1.commit();
 						conn1.close();
@@ -178,16 +178,11 @@ public class Administrator {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
 					bookandAuthor();
-					
 				}
-				
-				
 				break;
 				
-				
-		case(3):System.out.println("Enter the Name of Author to add or enter N/A");
+		case(3):System.out.println("ENTER THE NAME OF THE AUTHOR TO ADD OR ENTER N/A");
 				String addAuthor2="";
 				addAuthor2 = reader.readLine();
 				query1 ="INSERT INTO tbl_author(authorName) Values ('"+addAuthor2+"');";
@@ -200,7 +195,7 @@ public class Administrator {
 				bookandAuthor();
 				break;
 				
-		case(4):System.out.println("Enter the Book name to add or enter N/A");
+		case(4):System.out.println("ENTER THE NAME OF THE BOOK TO ADD OR ENTER N/A");
 				String addBook2 = "";
 				addBook2 = reader.readLine();
 				query = "INSERT INTO tbl_book(title) VALUES ('"+addBook2+"');";
@@ -216,7 +211,8 @@ public class Administrator {
 				conn1.close();
 				bookandAuthor();
 				break;
-		default:
+		default:adminDisplay();
+				break;
 		}
 	}
 	
@@ -224,19 +220,16 @@ public class Administrator {
 	public void updateBookandAuthor() throws SQLException, IOException{	
 		
 		String query="";
-		
-		
+	
 		Connection conn = JDBCConnect.getConnection();
-
 		Statement statement;
 		statement = conn.createStatement();
 		
-		System.out.println("Select BookID and Author ID that you want to update");
-		System.out.println("1) Book ID only");
-		System.out.println("2) Author Id only");
-		System.out.println("3) Book ID and authorID");
-		//System.out.println("4) Book ID and author ID together ");
-		System.out.println("4) QUIT to previous");
+		System.out.println("SELECT THE BOOKID AND AUTHORID THAT YOU WANT TO UPDATE");
+		System.out.println("1) BOOK ID ONLY");
+		System.out.println("2) AUTHOR ID ONLY");
+		System.out.println("3) BOOK ID AND AUTHOR ID BOTH");
+		System.out.println("4) QUIT TO PREVIOUS");
 		
 		int option =scanner.nextInt();
 		switch(option){
