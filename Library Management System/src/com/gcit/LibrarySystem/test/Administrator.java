@@ -893,7 +893,4 @@ public class Administrator {
 		conn.commit();
 		conn.close();
 	}
-	
-	
-
 }

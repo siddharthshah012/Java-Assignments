@@ -3,12 +3,13 @@ package com.gcit.LibrarySystem.test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class Borrower {
@@ -41,11 +42,18 @@ public class Borrower {
 		ArrayList<Long> returnListCardNo = new ArrayList<Long>(); 
 		returnListCardNo = borrowerIds();
 		boolean value = true;
+		//returnListCardNo.forEach(s-> System.out.println(s));
+		for (int i=0; i< returnListCardNo.size();i++){
+			System.out.println(returnListCardNo.get(i));
+		}
 		
 		for (int i=0; i< returnListCardNo.size();i++){
+			
 			if (cardNumber == returnListCardNo.get(i)){
 				//cardNumber = returnListCardNo.get(i);
+				System.out.println("true");
 				value= true;
+				break;
 			}
 			else {
 				value = false;
@@ -64,9 +72,9 @@ public class Borrower {
 			
 			switch(inputValue){
 			
-			case(1):checkOutBook();
+			case(1):checkOutBook(cardNumber);
 					break;
-			case(2):returnBook();
+			case(2):returnBook(cardNumber);
 					break;
 			case(3):lms.mainDisplay();
 					break;
@@ -121,7 +129,7 @@ public class Borrower {
 			
 	}
 	
-	public void checkOutBook() throws SQLException, IOException{
+	public void checkOutBook(long cardNumber) throws SQLException, IOException{
 		System.out.println("1");
 		
 		Connection conn =JDBCConnect.getConnection();
@@ -136,12 +144,9 @@ public class Borrower {
 		query = "select * from tbl_library_branch order by branchId ";
 		ResultSet rs = stmt.executeQuery(query);
 		while(rs.next()){
-			
 			listBranchNames.add(rs.getInt("branchId")+","+rs.getString("branchName")+","+ rs.getString("branchAddress"));
-			
 		}
-		//conn.commit();
-		
+		conn.commit();
 		for (int i = 0; i < listBranchNames.size(); i++) {
 			
 			String[] splitStr = listBranchNames.get(i).split(",");
@@ -155,7 +160,7 @@ public class Borrower {
 		int selectedNumber=0;
 		selectedNumber = scanner.nextInt();
 		
-		String storeBranchList;
+		String storeBranchList = null;
 		
 		if (selectedNumber == (listBranchNames.size()+1)){
 			borrowerDisplay();
@@ -172,13 +177,69 @@ public class Borrower {
 			}
 			else{
 				System.out.println("Please enter a suitable number");
-				checkOutBook();
+				checkOutBook(cardNumber);
 			}
-			
 		}
 		
+		String[] splitstr = storeBranchList.split(",");
+		
+		query1 ="Select bk.bookId,title, authorName "+
+				"from tbl_book_authors as ba "+
+				"join tbl_book as bk on bk.bookId=ba.bookId "+
+				"join tbl_author as au on au.authorId=ba.authorId "+
+				"Where bk.bookId IN "+
+				"(select bc.bookId from tbl_book_copies as bc where bc.branchId ="+splitstr[0]+")";
+		
+		ResultSet rs1 = stmt.executeQuery(query1);
+		conn.commit();
+		ArrayList <String> storeAvailBook = new ArrayList<String>();
+		
+		while (rs1.next()){
+			storeAvailBook.add(rs1.getInt("bookId")+" "+rs1.getString("title")+" "+rs1.getString("authorName"));
+		}
+		for (int a =0;a <storeAvailBook.size();a++){
+			System.out.println((a+1)+") " + storeAvailBook.get(a));
+		}
+		
+		System.out.println("SELECT AND ENTER THE BOOK ID FROM THE LIST:");
+		int selectedBookId = scanner.nextInt();
+		int id=0;
+		for (int b=0; b<storeAvailBook.size();b++){
+			String[] splitstr1 = storeAvailBook.get(b).split(" ");
+			if (selectedBookId == Integer.parseInt(splitstr1[0])){
+				id = selectedBookId; 
+				
+			}
+		}
+		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		//String S = timestamp;
+		
+		Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(timestamp2);
+		cal.add(Calendar.DAY_OF_WEEK, 7);
+		timestamp.setTime(cal.getTime().getTime()); // or
+		timestamp2 = new Timestamp(cal.getTime().getTime());
+		
+		System.out.println("CUrr: "+timestamp+" 1week :"+timestamp2);
 		
 		
+		query="INSERT INTO tbl_book_loans VALUES "
+				+ "("+id+","+splitstr[0]+","+cardNumber+",NOW(),NOW()+interval 1 week, null);";
+		int rs3 = stmt.executeUpdate(query);
+		
+		if (rs3 ==1){System.out.println("copy updated");}
+		conn.commit();
+		query ="UPDATE tbl_book_copies SET noOfCopies = (noOfCopies -1) "
+				+ "WHERE bookId="+id+" and branchId= "+splitstr[0] +" and noOfCopies > 0;";
+		
+		int rs4 = stmt.executeUpdate(query);
+		if (rs4 ==1){System.out.println(" number of Copies updated ");}
+		
+		conn.commit();
+		conn.close();
+		borrowerDisplay();
 		
 	}
 	
@@ -221,8 +282,57 @@ public class Borrower {
 		return null;
 	}
 	
-	public void returnBook(){
-		System.out.println("2");
+	public void returnBook(long cardNumber) throws SQLException, IOException{
+		
+		Connection conn =JDBCConnect.getConnection();
+		ArrayList<String> listBranchNames = new ArrayList<String>();
+		
+		String query ="";
+		String query1="";
+		
+		Statement stmt;
+		
+		stmt = conn.createStatement();
+		query = "select * from tbl_library_branch order by branchId ";
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			listBranchNames.add(rs.getInt("branchId")+","+rs.getString("branchName")+","+ rs.getString("branchAddress"));
+		}
+		conn.commit();
+		for (int i = 0; i < listBranchNames.size(); i++) {
+			
+			String[] splitStr = listBranchNames.get(i).split(",");
+			System.out.print((i+1)+") ");
+			System.out.print(splitStr[1]+",");
+			System.out.println(splitStr[2]);
+		}
+		System.out.println((listBranchNames.size()+1)+") Quit to Previous Menu");
+		
+		System.out.println("Enter the number ");
+		int selectedNumber=0;
+		selectedNumber = scanner.nextInt();
+		
+		String storeBranchList = null;
+		
+		if (selectedNumber == (listBranchNames.size()+1)){
+			borrowerDisplay();
+		}
+		else{
+			if (selectedNumber >=0 && selectedNumber <= listBranchNames.size()){
+				
+				for (int i = 0; i < listBranchNames.size(); i++) {
+					//System.out.print(i+" ");
+					if (selectedNumber == (i+1)){
+						storeBranchList = listBranchNames.get(i);
+					}	
+				}
+			}
+			else{
+				System.out.println("Please enter a suitable number");
+				checkOutBook(cardNumber);
+			}
+		}
+		
 	}
 	
 
