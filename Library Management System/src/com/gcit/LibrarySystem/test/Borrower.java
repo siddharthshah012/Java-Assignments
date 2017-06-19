@@ -211,7 +211,7 @@ public class Borrower {
 				
 			}
 		}
-		
+		/*
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		//String S = timestamp;
 		
@@ -222,7 +222,7 @@ public class Borrower {
 		timestamp.setTime(cal.getTime().getTime()); // or
 		timestamp2 = new Timestamp(cal.getTime().getTime());
 		
-		System.out.println("CUrr: "+timestamp+" 1week :"+timestamp2);
+		System.out.println("CUrr: "+timestamp+" 1week :"+timestamp2);*/
 		
 		
 		query="INSERT INTO tbl_book_loans VALUES "
@@ -332,6 +332,68 @@ public class Borrower {
 				checkOutBook(cardNumber);
 			}
 		}
+		
+		String[] splitstr = storeBranchList.split(",");
+		
+		query=  "select bl.bookId,bk.title,au.authorName,bl.dateOut "+ 
+				"from tbl_book_authors as ba "+
+				"join tbl_book as bk on bk.bookId=ba.bookId "+
+				"join tbl_book_loans as bl on bl.bookId=ba.bookId "+
+				"join tbl_author as au on au.authorId=ba.authorId "+
+				"Where bl.branchId="+splitstr[0] +" and bl.cardNo="+ cardNumber+"";
+		
+		ResultSet rs2 = stmt.executeQuery(query);
+		conn.commit();
+		ArrayList<Integer> storeBookId = new ArrayList<Integer>();
+		ArrayList<Timestamp> storeDateOut = new ArrayList<Timestamp>();
+		while (rs2.next()){
+			storeBookId.add(rs2.getInt("bookId"));
+			storeDateOut.add(rs2.getTimestamp("dateOut"));
+		}
+		
+		for(int x = 0; x< storeDateOut.size();x++){
+			
+			System.out.println((x+1)+") "+ storeDateOut.get(x));
+		}
+		
+		System.out.println("SELECT AND ENTER THE NUMBER FOR THE SELECTION");
+		int selectNumber = scanner.nextInt();
+		int varBookId = 0;
+		Timestamp varStore = null;
+		int x=0;
+		while(x<storeDateOut.size()){
+			System.out.println(storeDateOut.size());
+			if (selectNumber == (x+1)){
+				System.out.println(selectNumber +" "+ (x+1));
+				varBookId =storeBookId.get(x);
+				varStore= storeDateOut.get(x);	
+			}
+			x++;
+		}
+		System.out.println("out"+ varStore);
+		conn.commit();
+		conn.close();
+		
+		Connection conn1= JDBCConnect.getConnection();
+		Statement state;
+		state = conn1.createStatement();
+		String queryUpdate="UPDATE tbl_book_loans SET dateIn = NOW() WHERE dateOut='"+varStore+"';";
+		int rs4 = state.executeUpdate(queryUpdate);
+		if (rs4 ==1 ){
+			System.out.println("Updated bookLoans Successfully");
+		}
+		conn1.commit();
+		String queryUpdateBookCopies = 	"UPDATE tbl_book_copies "+
+										"SET noOfCopies = (noOfCopies + 1) " +
+										"WHERE bookId ="+varBookId+" and branchId="+splitstr[0]+"; ";
+		int rs5 = state.executeUpdate(queryUpdateBookCopies);
+		if (rs5== 1){
+			
+		}
+		
+		
+		conn1.commit();
+		conn1.close();
 		
 	}
 	
