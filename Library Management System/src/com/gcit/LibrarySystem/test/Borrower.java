@@ -51,7 +51,7 @@ public class Borrower {
 			
 			if (cardNumber == returnListCardNo.get(i)){
 				//cardNumber = returnListCardNo.get(i);
-				System.out.println("true");
+				//System.out.println("true");
 				value= true;
 				break;
 			}

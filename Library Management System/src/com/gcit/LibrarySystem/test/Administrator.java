@@ -21,16 +21,17 @@ public class Administrator {
 	public void adminDisplay() throws IOException, SQLException{
 		LibraryManagement lms = new LibraryManagement();
 		System.out.println("************ADMINISTRATOR DISPLAY****************");
-		System.out.println("1)	ADD/UPDATE/DELETE BOOK AND AUTHOR");
-		System.out.println("2)	ADD/UPDATE/DELETE PUBLISHER");
-		System.out.println("3)	ADD/UPDATE/DELETE LIBRARY BRANCHES");
-		System.out.println("4)	ADD/UPDATE/DELETE BORROWERS");
-		System.out.println("5)	OVER-RIDE DUE DATE FOR A BOOK LOAN");
-		System.out.println("6)	QUIT TO PREVIOUS MENU");
+		System.out.println("1)   ADD/UPDATE/DELETE BOOK AND AUTHOR");
+		System.out.println("2)   ADD/UPDATE/DELETE PUBLISHER");
+		System.out.println("3)   ADD/UPDATE/DELETE LIBRARY BRANCHES");
+		System.out.println("4)   ADD/UPDATE/DELETE BORROWERS");
+		System.out.println("5)   OVER-RIDE DUE DATE FOR A BOOK LOAN");
+		System.out.println("6)   QUIT TO PREVIOUS MENU");
 		
 		int option =0;							//Used to take input
 		option = scanner.nextInt();
 		
+		//while (option >0 && option < 6)
 		switch(option){
 		
 		case(1):bookandAuthor();
@@ -46,6 +47,7 @@ public class Administrator {
 		case(6):lms.mainDisplay();
 				break;
 		default:lms.mainDisplay();
+				break;
 		}
 		
 		
@@ -100,11 +102,11 @@ public class Administrator {
 		
 		switch(acceptDecline){
 		
-		case(1):System.out.println("Enter the Book name to add or enter N/A");
+		case(1):System.out.println("ENTER THE BOOK NAME OR TYPE N/A");
 				String addBook = "";
 				addBook = reader.readLine();
 		
-				System.out.println("Enter the Name of Author to add or enter N/A");
+				System.out.println("ENTER THE BOOK AUTHOR OR TYPE N/A");
 				String addAuthor="";
 				addAuthor = reader.readLine();
 				
@@ -216,7 +218,6 @@ public class Administrator {
 		}
 	}
 	
-	
 	public void updateBookandAuthor() throws SQLException, IOException{	
 		
 		String query="";
@@ -297,6 +298,11 @@ public class Administrator {
 				conn.close();
 				bookandAuthor();
 				break;
+				
+		default:conn.commit();
+				conn.close(); 
+				bookandAuthor();
+				break;
 		}
 		
 		
@@ -365,6 +371,10 @@ public class Administrator {
 				break;
 				
 		case(4):conn.commit();
+				conn.close();
+				bookandAuthor();
+				break;
+		default:conn.commit();
 				conn.close();
 				bookandAuthor();
 				break;
@@ -790,7 +800,7 @@ public class Administrator {
 		
 		conn.commit();
 		conn.close();
-		libraryBranch();
+		borrowers();
 		
 	}
 	private void deleteBorrower() throws SQLException, IOException{
@@ -832,7 +842,7 @@ public class Administrator {
 		
 		conn.commit();
 		conn.close();
-		libraryBranch();
+		borrowers();
 		
 	}
 	

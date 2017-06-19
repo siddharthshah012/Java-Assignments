@@ -38,7 +38,8 @@ public class LibraryManagement {
 					break;
 			case(3):borrower.borrowerDisplay();
 					break;	
-			case(4):System.exit(0);
+			case(4):System.out.println("HAVE A GREAT DAY AHEAD AND VISIT US BACK SOON!!!!!");
+					System.exit(0);
 			default:mainDisplay();
 					break;
 			}
@@ -197,8 +198,6 @@ public class LibraryManagement {
 					}
 					
 					conn.commit();
-					
-
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
