@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class BaseDAO {
 	
-	public static Connection conn = null;
+	public Connection conn = null;
 
 	public BaseDAO(Connection conn) {
 		this.conn = conn;
@@ -23,6 +23,7 @@ public abstract class BaseDAO {
 		conn.commit();
 	}
 
+	@SuppressWarnings("null")
 	public Integer saveWithID(String query, Object[] vals) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
