@@ -10,6 +10,23 @@ import java.util.List;
 //import com.mysql.jdbc.Statement;
 
 public abstract class BaseDAO {
+	
+	private int pageNo = 1;
+	/**
+	 * @return the pageNo
+	 */
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	/**
+	 * @param pageNo the pageNo to set
+	 */
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	private int pageSize = 10;
 
 	public static Connection conn = null;
 
@@ -39,6 +56,19 @@ public abstract class BaseDAO {
 		PreparedStatement pstmt = null;
 		pstmt = conn.prepareStatement(query);
 		setPstmtObjects(vals, pstmt);
+		ResultSet rs = pstmt.executeQuery();
+		return extractData(rs);
+	}
+	
+	public List<?> readAll(String query, Object[] vals) throws ClassNotFoundException, SQLException{
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		if(vals!=null){
+			int count = 1;
+			for(Object obj: vals){
+				pstmt.setObject(count, obj);
+				count++;
+			}
+		}
 		ResultSet rs = pstmt.executeQuery();
 		return extractData(rs);
 	}

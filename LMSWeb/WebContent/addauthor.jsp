@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>LMS</title>
-
-</head>
-<body>
+<%@include file="include.html" %>
+<div>
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Please Insert Author Details</h2>
 	<form action="addAuthor" method="post">
@@ -13,5 +7,4 @@
 		<button type="submit">Add Author!</button>
 	</form>
 
-</body>
-</html>
+</div>

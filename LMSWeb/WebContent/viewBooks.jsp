@@ -7,41 +7,37 @@
 
 <%
 AdminService adminService = new AdminService();
-List<Author> authors = adminService.getAllAuthors();
+List<Book> books = adminService.getAllBooks();
 /*Integer authorId = Integer.parseInt(request.getParameter("authorId"));
 Author author = adminService.getAuthorId(authorId);*/%>
 <div class ="jumbotron">
 	<h1>Welcome to GCIT Library Management System</h1>
-	<h2>Below are the list of Authors in LMS</h2>
+	<h2>Below are the list of Books in LMS</h2>
 	<a href="welcome.jsp">Welcome page</a></br>
-	<a href="author.jsp">GO back</a></br>
+	<a href="book.jsp">GO back</a></br>
 	${message} 
 
 	<table class="table">
 		<tr>
-			<th>Author ID</th>
-			<th>Author Name</th>
+			<th>Book ID</th>
 			<th>Book Title</th>
 			<th>Edit</th>
 			<th>Delete</th>
 		</tr>
-		<%for(Author a: authors){ %>
+		<%for(Book b: books){ %>
 		<tr>
-			<td><%=authors.indexOf(a)+1 %></td>
-			<td><%=a.getAuthorName() %></td>	
-			<td><% for (Book b: a.getBooks()){
-				out.println(b.getTitle()+ "|");
-			}%></td>
+			<td><%=books.indexOf(b)+1 %></td>
+			<td><%=b.getTitle()%></td>	
 			<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
-			data-target="#editAuthorModal" href="editAuthor.jsp?authorId=<%=a.getAuthorId()%>">EDIT!</button></td>
-			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteAuthor?authorId=<%=a.getAuthorId()%>'">Delete!</button></td>	
+			data-target="#editBookModal" href="editBook.jsp?bookId=<%=b.getBookId()%>">EDIT!</button></td>
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deletebook?bookId=<%=b.getBookId()%>'">Delete!</button></td>	
 		</tr>
 		<%} %>
 	</table>
 </div>
 
 <div class="modal fade bs-example-modal-lg" tabindex="-1"
-	id="editAuthorModal" role="dialog" aria-labelledby="myLargeModalLabel">
+	id="editBookModal" role="dialog" aria-labelledby="myLargeModalLabel">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content"></div>
 	</div>
