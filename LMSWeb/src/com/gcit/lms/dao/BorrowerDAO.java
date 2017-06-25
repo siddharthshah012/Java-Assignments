@@ -46,4 +46,9 @@ public class BorrowerDAO extends BaseDAO{
 
 	}
 
+	public List<Borrower> readAllBorrowers(Integer pageNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

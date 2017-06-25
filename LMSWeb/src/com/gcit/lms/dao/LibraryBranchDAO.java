@@ -17,7 +17,7 @@ public class LibraryBranchDAO extends BaseDAO{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void createLibBranch(Library library) throws Exception {
+	public void addBranch(Library library) throws Exception {
 		save("insert into tbl_library_branch (branchName, branchAddress) values(?, ?)",
 				new Object[] { library.getBranchName(),
 						library.getBranchAddress() });
@@ -96,5 +96,12 @@ public class LibraryBranchDAO extends BaseDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<Library> readBranchesByName(String branchName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 }

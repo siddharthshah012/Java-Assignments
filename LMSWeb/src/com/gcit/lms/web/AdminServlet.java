@@ -14,14 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.Genre;
 import com.gcit.lms.entity.Publisher;
 import com.gcit.lms.service.AdminService;
 
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addauthor", "/deleteAuthor","/editAuthor","/addBook","/viewauthors",
-			"/deletebook","/viewBooks" })
+@WebServlet({ "/addAuthor", "/deleteAuthor","/editAuthor","/addBook","/deleteBook" })
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -47,11 +47,11 @@ public class AdminServlet extends HttpServlet {
 		
 		case"/deleteAuthor":deleteAuthor(request);
 							forwardPath="/viewauthors.jsp";
-							message ="Deleetd AUthor successfully";
-								break;
-		case"/deletebooks":	deleteBook(request);
+							message ="Deleetd Author successfully";
+							break;
+		case"/deleteBook":	deleteBook(request);
 							forwardPath="/viewBooks.jsp";
-							message ="Deleetd Book successfully";
+							message ="Deleted Book successfully";
 							break;
 		}
 		
@@ -78,12 +78,13 @@ public class AdminServlet extends HttpServlet {
 		case "/editAuthor" :editAuthor(request);
 							forwardPath="/viewauthors.jsp";
 							break;
-		case"/addBook": addBook(request);
+		case"/addBook": System.out.println("here");
+						addBook(request);
 						forwardPath="/viewBooks.jsp";
 						break;
 							
-				default:forwardPath="/viewauthors.jsp";
-						break;
+		/*default:forwardPath="/viewAuthors.jsp";
+				break;*/
 
 		}
 		RequestDispatcher rd = request.getRequestDispatcher(forwardPath);
@@ -105,19 +106,31 @@ public class AdminServlet extends HttpServlet {
 	}
 	private void addBook(HttpServletRequest request) {
 		Book book = new Book();
-		String[] authors, genres,publisher;
-		String title, publisherData;
+		String[] authors, genres,publisher ;
+		String title, publisherData = null;
+		
+		book.setTitle(request.getParameter("bookName"));
+		
+		try {
+			adminService.saveBook(book);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		try{
-			title = request.getParameter("title");
+			title = request.getParameter("bookName");
 		}catch (NullPointerException e){
 			return ;
 		}
 		
 		try {
-			authors = request.getParameterValues("authors");
-			genres = request.getParameterValues("genres");
-			publisherData = request.getParameter("publisher");
+			authors = request.getParameterValues("authorName");
+			genres = request.getParameterValues("genreName");
+			publisherData = request.getParameter("publisherName");
 			publisher = publisherData.split(" ");
 		}catch(NullPointerException e){
 			return;
@@ -126,7 +139,7 @@ public class AdminServlet extends HttpServlet {
 		AdminService service = new AdminService();
 		List<Author> authorList = new ArrayList<>();
 		List<Genre> genreList = new ArrayList<>();
-		Publisher pub;
+		Publisher publisherSelected;
 		
 		try {
 			for(String author: authors) {
@@ -136,21 +149,26 @@ public class AdminServlet extends HttpServlet {
 			}
 			for(String genre: genres) {
 				String[] temp = genre.split(" ");
-				Genre g = service.getGenreByPk(Integer.parseInt(temp[0]));
+				Genre g = service.getGenreById(Integer.parseInt(temp[0]));
 				genreList.add(g);
 			}
 			book.setAuthors(authorList);
 			book.setGenres(genreList);
 			book.setTitle(title);
-			if(!publisherData.equals("Select")) {
-				pub = service.getPublisherByPk(Integer.parseInt(publisher[0]));
-				book.setPublisher(pub);
+			if(!publisherData.isEmpty()) {
+				publisherSelected = service.getPublisherById(Integer.parseInt(publisher[0]));
+				book.setPublisher(publisherSelected);
 			}else
 				book.setPublisher(null);
 			
-			service.addBook(book);
+			try {
+				service.saveBook(book);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (SQLException e) {
-			System.out.println("Adding book failed.");
+			//System.out.println("Adding book failed.");
 			e.printStackTrace();
 		}
 	}
@@ -192,7 +210,8 @@ public class AdminServlet extends HttpServlet {
 		
 		Book book = new Book();
 		String message = "";
-		
+		if (request.getParameter("bookId") != null && !request.getParameter("bookId").isEmpty()) {
+			book.setBookId(Integer.parseInt(request.getParameter("bookId")));
 			try {
 				adminService.deleteBook(book);
 				message = "book deleted Successfully";
@@ -200,10 +219,7 @@ public class AdminServlet extends HttpServlet {
 				e.printStackTrace();
 				message = "Book delete failed. Try Again!";
 			}
-		
-		
 	}
-	
-	
+	}
 
 }

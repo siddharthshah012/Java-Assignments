@@ -16,14 +16,14 @@ public class PublisherDAO extends BaseDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void addpublisher(Publisher publisher) throws SQLException {
+	public void addPublisher(Publisher publisher) throws SQLException {
 		save("Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)",
 				new Object[] { publisher.getPublisherName(),
 						publisher.getPublisherAddress(),
 						publisher.getPublisherPhones() });
 	}
 
-	public Integer addpublisherwithid(Publisher publisher) throws SQLException {
+	public Integer addPublisherWithId(Publisher publisher) throws SQLException {
 		return saveWithID(
 				"Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)",
 				new Object[] { publisher.getPublisherName(),
@@ -31,7 +31,7 @@ public class PublisherDAO extends BaseDAO {
 						publisher.getPublisherPhones() });
 	}
 
-	public void updatepublisher(Publisher publisher) throws SQLException {
+	public void updatePublisher(Publisher publisher) throws SQLException {
 		save("Update tbl_publisher set publisherName= ?, publisherAddress=?, publisherPhone=? where publisherId = ?",
 				new Object[] { publisher.getPublisherName(),
 						publisher.getPublisherAddress(),
@@ -39,19 +39,19 @@ public class PublisherDAO extends BaseDAO {
 						publisher.getPublisherId() });
 	}
 
-	public void deletepublisher(Publisher publisher) throws SQLException {
+	public void deletePublisher(Publisher publisher) throws SQLException {
 		save("delete from tbl_publisher where publisherId = ?",
 				new Object[] { publisher.getPublisherId() });
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Publisher> readallpublishers() throws SQLException {
+	public List<Publisher> readAllPublishers() throws SQLException {
 		return (List<Publisher>) read("select * from tbl_publisher", null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Publisher> readallpublishersbyname(String searchString)
+	public List<Publisher> readAllPublishersByName(String searchString)
 			throws SQLException {
 		searchString = "%" + searchString + "%";
 		return (List<Publisher>) read(
@@ -60,7 +60,7 @@ public class PublisherDAO extends BaseDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Publisher readpublishersbypk(Integer publisherId)
+	public Publisher readPublishersById(Integer publisherId)
 			throws SQLException {
 		List<Publisher> publishers = (List<Publisher>) read(
 				"select * from tbl_publisher where publisherId=?",

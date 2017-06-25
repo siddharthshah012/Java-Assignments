@@ -68,25 +68,23 @@ public class GenreDAO extends BaseDAO{
 		BookDAO bdao = new BookDAO(conn);
 		while(rs.next()){
 			Genre g = new Genre();
-			g.setGenreId(rs.getInt("genreId"));
-			g.setGenreName(rs.getString("genreName"));
-			g.setBooks((List<Book>) bdao.readFirstLevel("select * from tbl_book where bookId IN(select authorId from tbl_book_genres where genreId=?) ", new Object[]{g.getGenreId()}));
+			g.setGenreId(rs.getInt("genre_id"));
+			g.setGenreName(rs.getString("genre_name"));
+			g.setBooks((List<Book>) bdao.readFirstLevel("select * from tbl_book where bookId IN(select bookId from tbl_book_genres where genre_id=?) ", new Object[]{g.getGenreId()}));
 			
 			genres.add(g);
-			
-			
 		}
 		return genres;
 	}
 
-	@Override
+	@Override	
 	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
 		List<Genre> listGenres = new ArrayList<>();
 		while(rs.next()){
 			Genre g = new Genre();
-			g.setGenreId(rs.getInt("genreId"));
-			g.setGenreName(rs.getString("genreName"));
+			g.setGenreId(rs.getInt("genre_id"));
+			g.setGenreName(rs.getString("genre_name"));
 			listGenres.add(g);
 		}
 		return listGenres;

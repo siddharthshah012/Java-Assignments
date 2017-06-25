@@ -20,6 +20,7 @@ public class BookDAO extends BaseDAO{
 	}
 	
 	public Integer addBookWithID(Book book) throws SQLException{
+		System.out.println(book.getTitle());
 		return saveWithID("insert into tbl_book(title) values (?)", new Object[] {book.getTitle()});
 	}
 	
@@ -28,7 +29,20 @@ public class BookDAO extends BaseDAO{
 	}
 	
 	public void deleteBook(Book book) throws SQLException{
+		System.out.println(book.getBookId());
 		save("delete from tbl_book where bookId = ?", new Object[] {book.getBookId()});
+		
+	}
+	
+	public void addBookAuthors(Integer bookId, Integer authorId) throws ClassNotFoundException, SQLException{
+		System.out.println(bookId);
+		save("insert into tbl_book_authors values (?, ?)", new Object[] {bookId, authorId});
+	}
+	
+	public void addBookGenres(Integer bookId, Integer genreId) throws ClassNotFoundException, SQLException{
+		System.out.println(bookId);
+		save("insert into tbl_book_genres values (?, ?)", new Object[] {genreId,bookId});
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -51,6 +65,7 @@ public class BookDAO extends BaseDAO{
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Book> extractData(ResultSet rs) throws SQLException {
 		List<Book> books = new ArrayList<>();
@@ -76,6 +91,19 @@ public class BookDAO extends BaseDAO{
 			books.add(b);
 		}
 		return books;
+	}
+
+	public Integer getBooksCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void updateBookPublisher(Integer bookId, Integer pubId) throws SQLException {
+		// TODO Auto-generated method stub
+		
+		//System.out.println("update pub id: "+pubId+" book id: "+bookId);
+		save("update tbl_book set pubId = ? where bookId = ?", new Object[]{pubId,bookId});
+		
 	}
 
 }
