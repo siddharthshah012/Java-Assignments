@@ -1,6 +1,7 @@
 package com.gcit.lms.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -49,6 +50,50 @@ public class BorrowerDAO extends BaseDAO{
 	public List<Borrower> readAllBorrowers(Integer pageNo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public int CheckCard(Integer cardNo) {
+		// TODO Auto-generated method stub
+		try {
+			System.out.println("checkin DAO");
+			String query = "select count(*) as ct from tbl_borrower where cardNo = "+cardNo+";";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			int count=0;
+			while (rs.next()){
+				count = rs.getInt("ct");
+			}
+			if (count !=0){
+				return count;
+			}
+			else{
+				return 0;
+			}//return getCount("select count(*) from tbl_borrower where cardNo = ?",new Object[] {cardNo});
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//return 0;
+		return 0;
+	}
+	
+	
+
+	@SuppressWarnings("unchecked")
+	public Borrower readBorrowerByID(Integer cardNo) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		List<Borrower> borrower = (List<Borrower>) read("select cardNo from tbl_borrower where cardNo = ?", new Object[] {cardNo});
+		System.out.println("borrower" +  borrower);
+		System.out.println("size" + borrower.size());
+		if(borrower!=null && borrower.size() >0){
+			System.out.println("in DAO"+borrower.get(0));
+			return borrower.get(0);
+		}
+		else{
+			return null;
+			}
+		
+		
 	}
 
 }

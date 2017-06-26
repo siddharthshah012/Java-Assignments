@@ -39,7 +39,7 @@ public class GenreDAO extends BaseDAO{
 	
 	@SuppressWarnings("unchecked")
 	public List<Genre> readAllGenres() throws ClassNotFoundException, SQLException{
-		return (List<Genre>) readAll("select * from tbl_genre", null);
+		return (List<Genre>) read("select * from tbl_genre", null);
 	}
 	
 	@SuppressWarnings("unchecked")

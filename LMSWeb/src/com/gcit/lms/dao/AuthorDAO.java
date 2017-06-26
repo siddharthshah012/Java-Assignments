@@ -62,6 +62,7 @@ public class AuthorDAO extends BaseDAO {
 				new Object[] { searchString });
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Author> extractData(ResultSet rs) throws SQLException {
 		List<Author> authors = new ArrayList<>();

@@ -1,4 +1,4 @@
-<%@include file="include.html" %>
+
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.gcit.lms.entity.Author"%>
 <%@page import="java.util.List"%>
@@ -15,7 +15,7 @@ Author author = adminService.getAuthorId(authorId);*/%>
 	<h2>Below are the list of Authors in LMS</h2>
 	<a href="welcome.jsp">Welcome page</a></br>
 	<a href="author.jsp">GO back</a></br>
-	${message} 
+	${message}
 
 	<table class="table">
 		<tr>

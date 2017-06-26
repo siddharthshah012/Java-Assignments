@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.BookLoans;
 
 public class BookDAO extends BaseDAO{
 	
@@ -23,6 +24,31 @@ public class BookDAO extends BaseDAO{
 		System.out.println(book.getTitle());
 		return saveWithID("insert into tbl_book(title) values (?)", new Object[] {book.getTitle()});
 	}
+	@SuppressWarnings("unchecked")
+	public List<Book> readAllBookswithBranch(int branchId)
+			throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		// setPageNo(pageNo);
+		System.out.println("branch in dao"+ branchId);
+		return (List<Book>) read(
+				"select * from tbl_book where bookId in "
+				+ "(select bc.bookId from tbl_book_copies as bc where bc.branchId = ? and noOfCopies>0)",
+				new Object[] { branchId });
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Book> readBooksforCardNo(int cardNo)
+			throws ClassNotFoundException, SQLException { // return the book
+															// object.!!
+		// TODO Auto-generated method stub
+		return (List<Book>) read(
+				"select * from tbl_book as bk where b.bookId in "
+				+ "(select bookId from tbl_book_loans where cardNo=? and dateIn is NULL )",
+				new Object[] { cardNo});
+		// select b.title from books where b.Id in (select bId from bookLoans
+		// where cardNo = ?)", new Object[] {borrower.getCardNo()}
+	}
+	
 	
 	public void updateBook(Book book) throws SQLException{
 		save("update tbl_book set title =? where bookId = ?", new Object[] {book.getTitle(), book.getBookId()});

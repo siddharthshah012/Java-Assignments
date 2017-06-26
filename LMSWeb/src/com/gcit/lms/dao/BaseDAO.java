@@ -51,6 +51,20 @@ public abstract class BaseDAO {
 		}
 		return null;
 	}
+	public Integer getCount(String string, Object[] vals) throws SQLException{
+		PreparedStatement pstmt = conn.prepareStatement(string);
+		ResultSet rs = pstmt.executeQuery();
+		int count=0;
+		while (rs.next()){
+			count = rs.getInt("count(cardNo)");
+		}
+		if (count !=0){
+			return count;
+		}
+		else{
+			return pageNo;
+		}
+	}
 
 	public List<?> read(String query, Object[] vals) throws SQLException {
 		PreparedStatement pstmt = null;
@@ -60,7 +74,7 @@ public abstract class BaseDAO {
 		return extractData(rs);
 	}
 	
-	public List<?> readAll(String query, Object[] vals) throws ClassNotFoundException, SQLException{
+	/*public List<?> readAll(String query, Object[] vals) throws ClassNotFoundException, SQLException{
 		PreparedStatement pstmt = conn.prepareStatement(query);
 		if(vals!=null){
 			int count = 1;
@@ -71,7 +85,7 @@ public abstract class BaseDAO {
 		}
 		ResultSet rs = pstmt.executeQuery();
 		return extractData(rs);
-	}
+	}*/
 
 	public abstract List<?> extractData(ResultSet rs) throws SQLException;
 

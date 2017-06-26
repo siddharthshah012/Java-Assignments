@@ -36,14 +36,14 @@ public class LibraryBranchDAO extends BaseDAO{
 				new Object[] { library.getBranchId() });
 	}
 	
-	public Library readLibBranchByID(Integer branchId)
+	public List<?> readLibBranchByID(Integer branchId)
 			throws ClassNotFoundException, SQLException {
 		@SuppressWarnings("unchecked")
 		List<Library> library = (List<Library>) read(
 				"select * from tbl_library_branch where branchId = ?",
 				new Object[] { branchId });
 		if (library != null && !library.isEmpty()) {
-			return library.get(0);
+			return (List<?>) library.get(0);
 		}
 		return null;
 	}
@@ -60,12 +60,31 @@ public class LibraryBranchDAO extends BaseDAO{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Library> readAllBranchs(Integer pageNo) throws ClassNotFoundException, SQLException{
-		setPageNo(pageNo);
+	public List<Library> readAllBranches() throws ClassNotFoundException, SQLException{
+		//setPageNo(pageNo);
 		return (List<Library>) read("select * from tbl_library_branch", null);
 	}
-	
-
+	/*
+	public List<Library> showBooksinBranch(Integer branchId) throws SQLException {
+		
+		String query1 ="Select bk.bookId,title, authorName "+
+				"from tbl_book_authors as ba "+
+				"join tbl_book as bk on bk.bookId=ba.bookId "+
+				"join tbl_author as au on au.authorId=ba.authorId "+
+				"Where bk.bookId IN "+
+				"(select bc.bookId from tbl_book_copies as bc where bc.branchId =?)";
+		
+		@SuppressWarnings("unchecked")
+		List<Library> library = (List<Library>) read(
+				query1,
+				new Object[] { branchId });
+		if (library != null && !library.isEmpty()) {
+			return library;
+		}
+		return null;
+		
+		
+	}*/
 
 	
 
@@ -73,35 +92,43 @@ public class LibraryBranchDAO extends BaseDAO{
 	@Override
 	public List<?> extractData(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
-		List<Library> authors = new ArrayList<>();
-		LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+		List<Library> library = new ArrayList<>();
+		BookDAO bdao = new BookDAO(conn);
 		while (rs.next()) {
 			Library lib = new Library();
 			lib.setBranchId(rs.getInt("branchId"));
+			lib.setBranchName(rs.getString("branchName"));
 			lib.setBranchAddress(rs.getString("branchAddress"));
-			lib.setBooks((List<Book>) lbdao
+			List<Book> books = (List<Book>) bdao
 					.readFirstLevel(
-							"select * from tbl_book where bookId IN (Select bookId from tbl_book_authors where authorId = ?)",
-							new Object[] { lib.getBranchId() }));
-			authors.add(lib);
+							"select * from tbl_book where bookId In"
+									+ "(select bookId from tbl_book_copies where branchId=?)",
+							new Object[] { lib.getBranchId() });
+			lib.setBooks(books);
+			
+			library.add(lib);
 		}
-		return authors;
-		
-		
+		return library;
 		//return null;
 	}
 
 	@Override
 	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		List<Library> libraries = new ArrayList<Library>();
 
+		while (rs.next()) {
+			Library l = new Library();
+			l.setBranchId(rs.getInt("branchId"));
+			l.setBranchName(rs.getString("branchName"));
+			l.setBranchAddress(rs.getString("branchAddress"));
+
+			libraries.add(l);
+		}
+		return libraries;
+	}
 	public List<Library> readBranchesByName(String branchName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
 }
