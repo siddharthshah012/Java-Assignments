@@ -25,6 +25,7 @@
 				<th>Book Title</th>
 				<th>Branch Name</th>
 				<th>Branch Address</th>
+				<th>Due date</th>
 				<th>SELECT!!!!</th>
 			</tr>
 			<%for(BookLoans bl: bookLoansList){ %>
@@ -33,7 +34,14 @@
 					<td><%= bl.getBooks().getTitle() %></td>
 					<td><%=bl.getBranch().getBranchName() %></td>
 					<td><%=bl.getBranch().getBranchAddress() %></td>
-					<td><button>EDIT!!</button> </td>				
+					<td><%=bl.getDueDate() %></td>
+					<td><form method="post" action="returnBook">
+						<input type="hidden" name="dateOut" value='<%=bl.getDateOut() %>'>
+						<input type="hidden" name="bookId" value=<%=bl.getBooks().getBookId() %>>
+						<input type="hidden" name="branchId" value=<%=bl.getBranch().getBranchId() %>>
+						<button type="submit" >RETURN BOOK</button>
+					
+					</form> </td>				
 				</tr>
 			<%} %>
 			

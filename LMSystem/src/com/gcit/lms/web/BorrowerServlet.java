@@ -2,6 +2,10 @@ package com.gcit.lms.web;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,7 +23,7 @@ import com.gcit.lms.service.BorrowerService;
 /**
  * Servlet implementation class BorrowerServlet
  */
-@WebServlet({"/BorrowerServlet","/checkCardNo","/checkout"})
+@WebServlet({"/BorrowerServlet","/checkCardNo","/checkout","/returnBook"})
 public class BorrowerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -120,10 +124,51 @@ public class BorrowerServlet extends HttpServlet {
 		case "/checkCardNo":checkCardNo(request, response);
 							//returnPath = "/verifyBAdmin.jsp";
 							break;
+		case"/returnBook": returnBook(request, response);
+							break;
 		
 	}
 
 }
+
+	private void returnBook(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		BookLoans bl = new BookLoans();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+		Date parsedDate = null;
+		try {
+			parsedDate = df.parse(request.getParameter("dateOut"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String message="";
+		Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+		bl.setDateOut(timestamp);
+		
+		Book book = new Book();
+		book.setBookId(Integer.parseInt(request.getParameter("bookId")));
+		bl.setBooks(book);
+			
+		
+		Library branch = new Library();
+		branch.setBranchId(Integer.parseInt(request.getParameter("branchId")));
+		bl.setBranch(branch);
+		
+		BorrowerService bservice = new BorrowerService();
+		try {
+			bservice.returnBookloan(bl);
+			message="passed";
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		request.setAttribute("message", message);
+		RequestDispatcher rd = request.getRequestDispatcher("/cardNo.jsp");
+		rd.forward(request, response);
+	}
 
 	private void checkCardNo(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -161,5 +206,7 @@ public class BorrowerServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		}	
 	}

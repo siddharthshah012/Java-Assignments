@@ -92,9 +92,11 @@ public class BorrowerService {
 			//System.out.println("bookid "+bookId+"branchid"+branchId+"cardno"+cardNo);
 			
 			return bldao.checkOutbook(book);
+			
 
 		} catch (SQLException e) {
 			System.out.println("Get books by name failed!");
+			conn.rollback();
 		} finally {
 			conn.commit();
 			if (conn != null) {
@@ -123,6 +125,35 @@ public class BorrowerService {
 			}
 		}
 		return null;
+	}
+
+
+	public void returnBookloan(BookLoans bl) throws SQLException {
+		// TODO Auto-generated method stub
+		
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			// LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			BookLoansDAO bldao = new BookLoansDAO(conn);
+			//System.out.println("bookid "+bookId+"branchid"+branchId+"cardno"+cardNo);
+			
+			bldao.returnBookloans(bl);
+			
+
+		} finally {
+			try {
+				conn.commit();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	
+		
 	}
 	
 	

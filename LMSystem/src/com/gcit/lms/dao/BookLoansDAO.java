@@ -171,5 +171,14 @@ public class BookLoansDAO extends BaseDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public void returnBookloans(BookLoans bl) throws SQLException {
+		// TODO Auto-generated method stub
+		save("update tbl_book_loans set dateIn = NOW() where dateOut = ?", new Object[]{bl.getDateOut()});
+		
+		save("update tbl_book_copies set noOfCopies = noOfCopies+1 where bookId=? and branchId =?",
+				new Object[] { bl.getBooks().getBookId(),
+						bl.getBranch().getBranchId() });
+		System.out.println("here in bookloansdao");
+	}
 
 }
