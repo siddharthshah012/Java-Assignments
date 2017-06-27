@@ -12,7 +12,7 @@ List<Publisher> publishers = adminService.getAllPublisher(); %>
 	<h2>Hello Admin! Please pick an action!</h2>	
 	
 	
-	<table class="table">
+	<table class="table" id="tablepub">
 		<tr>
 			<th>ID</th>
 			<th>Publisher Name</th>
@@ -30,13 +30,32 @@ List<Publisher> publishers = adminService.getAllPublisher(); %>
 			<td><button type="button" class="btn btn-sm btn-success" 
 				data-toggle="modal" data-target="#editPubModal"
 				href="editpublishers.jsp?pubId=<%=p.getPublisherId()%>">EDIT!</button></td>			
-			<td><button type="button" class="btn btn-sm btn-danger" 
-			onclick="javascript:location.href='deletePublisher?pubId=<%=p.getPublisherId()%>'">Delete!</button></td>	
+			<td><button type="button" class="btn btn-sm btn-danger" id="pubid"
+			onclick="deletePub()" value="<%=p.getPublisherId()%>">Delete!</button></td>	
 		</tr>
 		<%} %>
 	</table>
 
 </div>
+<script type="text/javascript">
+
+
+function deletePub(){
+	console.log(1);
+	$.ajax({
+		url:"deletePublisher",
+		//method: "get",
+		data:{
+			pubId: $('#pubid').val()
+		}
+	}).done(function (data){
+		$('#tablepub').html(data)		
+	})
+	
+}
+</script>
+
+
 <div class="modal fade bs-example-modal-lg" tabindex="-1"
 	id="editPubModal" role="dialog" aria-labelledby="myLargeModalLabel">
 	<div class="modal-dialog modal-lg" role="document">

@@ -28,7 +28,7 @@ Author author = adminService.getAuthorId(authorId);*/%>
 		<tr>
 			<td><%=books.indexOf(b)+1 %></td>
 			<td><%=b.getTitle()%></td>
-			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='editBook?bookId=<%=b.getBookId()%>'">Edit!</button></td>		
+			<td><button type="button" class="btn btn-sm " onclick="javascript:location.href='editBook?bookId=<%=b.getBookId()%>'">Edit!</button></td>		
 			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteBook?bookId=<%=b.getBookId()%>'">Delete!</button></td>	
 		</tr>
 		<%} %>

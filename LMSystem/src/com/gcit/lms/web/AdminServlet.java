@@ -138,7 +138,7 @@ public class AdminServlet extends HttpServlet {
 								}
 								path="/viewBranch.jsp";
 								break;
-		case"/deletePublisher": Publisher pub  = new Publisher();
+		case"/deletePublisher": /*Publisher pub  = new Publisher();
 								pub.setPublisherId(Integer.parseInt(request.getParameter("pubId")));
 								try {
 									System.out.println(pub +"in servlet");
@@ -147,7 +147,46 @@ public class AdminServlet extends HttpServlet {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								path="/viewpublishers.jsp";*/
+			
+								Publisher pub = new Publisher();
+								pub.setPublisherId(Integer.parseInt(request.getParameter("pubId")));
+								List<Publisher> publishers = null;
+								try {
+									publishers = adminService.getAllPublisher();
+								} catch (ClassNotFoundException e2) {
+									// TODO Auto-generated catch block
+									e2.printStackTrace();
+								} catch (SQLException e2) {
+									// TODO Auto-generated catch block
+									e2.printStackTrace();
+								}
+								try {
+									adminService.deletePublisher(pub);
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+								StringBuffer strBuf1 = new StringBuffer();
+								
+								strBuf1.append("<tr><th>ID</th><th>Publisher Name</th>"
+										+ "<th>Publisher Address</th><th>Publisher Phone</th>"
+										+ "<th>EDIT</th><th>DELETE</th></tr>");
+								for (Publisher p: publishers){
+									strBuf1.append("<tr><td>"+(publishers.indexOf(p)+1)+"</td><td>"+p.getPublisherName()+"</td><td>"+p.getPublisherAddress()+""
+											+ "</td><td>"+p.getPublisherPhones()+"</td>");
+									strBuf1.append("<td><button type='button' class='btn btn-sm btn-success' data-toggle='modal' "
+											+ "data-target='#editPubModal' href='editpublishers.jsp?pubId="+p.getPublisherId()+"'>EDIT!</button></td>");
+									strBuf1.append("<td><button type='button' class='btn btn-sm btn-danger' id='pubid' onclick='deletePub()' value="+p.getPublisherId()+">Delete!</button></td>");
+									strBuf1.append("</tr>");
+								}
+								response.getWriter().write(strBuf1.toString());
 								path="/viewpublishers.jsp";
+								//request.setAttribute("message", message);
+								//RequestDispatcher rd = request.getRequestDispatcher(path);
+								//rd.forward(request, response);
+								
 								break;
 		case"/deleteBorrower": Borrower bor =new Borrower();
 								bor.setCardNo(Integer.parseInt(request.getParameter("cardNo")));

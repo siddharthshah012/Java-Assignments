@@ -193,10 +193,14 @@ public class BorrowerServlet extends HttpServlet {
 			}else{
 				RequestDispatcher rd = request.getRequestDispatcher("/cardNo.jsp");
 				try {
+					StringBuffer strBuf = new StringBuffer();
+					
 					String addAuthorResult = "Card verification failed";
-					request.setAttribute("message", addAuthorResult);
-					rd.forward(request, response);
-				} catch (ServletException | IOException e) {
+					
+					strBuf.append(addAuthorResult);
+					response.getWriter().write(strBuf.toString());
+					//rd.forward(request, response);
+				} catch (IOException e) {
 					
 					// TODO Auto-generated catch block
 					e.printStackTrace();

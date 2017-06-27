@@ -102,19 +102,22 @@ public class BookDAO extends BaseDAO{
 	}
 	
 
-	public void addBookAuthors(Integer bookId, Integer authorId) {
+	public void addBookAuthors(Integer bookId, Integer authorId) throws SQLException {
 		// TODO Auto-generated method stub
+		
+		save("insert into tbl_book_authors values (?, ?)", new Object[] {bookId, authorId});
 		
 	}
 
-	public void addBookGenres(Integer bookId, Integer genreId) {
+	public void addBookGenres(Integer bookId, Integer genreId) throws SQLException {
 		// TODO Auto-generated method stub
+		save("insert into tbl_book_genres values (?, ?)", new Object[] {genreId,bookId});
 		
 	}
 
-	public void updateBookPublisher(Integer bookId, Integer publisherId) {
+	public void updateBookPublisher(Integer bookId, Integer publisherId) throws SQLException {
 		// TODO Auto-generated method stub
-		
+		save("update tbl_book set pubId = ? where bookId = ?", new Object[]{publisherId,bookId});
 	}
 
 }

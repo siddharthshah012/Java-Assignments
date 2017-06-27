@@ -10,18 +10,18 @@ List<Author> authors = adminService.getAllAuthors();
 List<Genre> genres = adminService.getAllGenres();
 List<Publisher> publishers =adminService.getAllPublishers();
 %>
-<div>
+<div class="jumbotron">
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Please Insert Author Details</h2>
 	<form action="addBook" method="post">
-		<select name="authorName"> 
+		<select multiple name="authorName"> 
 		<%for (Author a: authors) {%>
 			<option  value="<%=a.getAuthorId() %>"><%=a.getAuthorName()%></option>
 			
 			<% }%>
 			</select>
 			
-		<select name="genreName">
+		<select multiple name="genreName">
 			<%for (Genre g: genres) {%>
 				<option value="<%=g.getGenreId() %>"><%=g.getGenreName()%></option>
 			<% }%>
