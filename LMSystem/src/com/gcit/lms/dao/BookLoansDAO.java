@@ -1,0 +1,130 @@
+package com.gcit.lms.dao;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.BookLoans;
+import com.gcit.lms.entity.Borrower;
+import com.gcit.lms.entity.Library;
+
+public class BookLoansDAO extends BaseDAO {
+
+	public BookLoansDAO(Connection conn) {
+		super(conn);
+		// TODO Auto-generated constructor stub
+	}
+	public Integer checkOutbook(BookLoans bookLoans) throws ClassNotFoundException, SQLException {
+		try{
+			save("INSERT INTO tbl_book_loans VALUES "
+					+ "(?,?,?,NOW(),NOW()+interval 2 week, null);",
+					new Object[] { bookLoans.getBooks().getBookId(),
+							bookLoans.getBranch().getBranchId(),
+							bookLoans.getBorrower().getCardNo() });
+			//System.out.println("ahsdbak"+ bookId+" " + branchId+" "+cardNo);
+		System.out.println("entry added to the book loans table");
+			System.out.println(bookLoans.getBooks().getBookId());
+			save("update tbl_book_copies set noOfCopies = noOfCopies-1 where bookId=? and branchId =?",
+					new Object[] { bookLoans.getBooks().getBookId(),
+							bookLoans.getBranch().getBranchId() });
+		return 1;
+		}
+		catch(Exception e){
+		System.out.println(e);
+		return null;
+		}
+	}
+	public List<?> readallBookswithcardNumber(BookLoans bookloans) throws SQLException{
+		
+		return (List<?>) read(
+				"SELECT * from tbl_book_loans where cardNo=? and dateIn is NULL;",
+				new Object[] { bookloans.getBorrower().getCardNo() });
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<?> readBooksforCardNo(BookLoans bookloans)
+			throws ClassNotFoundException, SQLException { // return the book
+															// object.!!
+		// TODO Auto-generated method stub
+		
+		System.out.println("IN DAO");
+		return (List<?>) read(
+				"select * from tbl_book as bk where bk.bookId IN "
+				+ "(select bookId from tbl_book_loans where cardNo=? and dateIn is NULL );",
+				new Object[] { bookloans.getBorrower().getCardNo()});
+		// select b.title from books where b.Id in (select bId from bookLoans
+		// where cardNo = ?)", new Object[] {borrower.getCardNo()}
+	}
+	/*
+	public List<BookLoans> returnBook()
+	public Integer returnBook(){
+		return null;
+		
+	}*/
+	
+	@Override
+	public List<?> extractData(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		/*List<BookLoans> bookLoans = new ArrayList<BookLoans>();
+		
+		while(rs.next()){
+			BookLoans b = new BookLoans();
+			b.setDateOut(rs.getTimestamp("dateOut"));
+			b.setDateIn(rs.getTimestamp("dueDate"));
+			b.setDueDate(rs.getTimestamp("dateIn"));
+			Borrower brr = new Borrower();
+			brr.setCardNo(rs.getInt("cardNo"));
+			b.setBorrower(brr);
+			Book bo = new Book();
+			bo.setBookId(rs.getInt("cardNo"));
+			b.setBooks(bo);
+			Library lib = new Library();
+			lib.setBranchId(rs.getInt("branchId"));
+			b.setBranch(lib);
+			
+
+			bookLoans.add(b);
+		}*/
+		return null;
+		
+	}
+
+	@Override
+	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		List<BookLoans> bookLoans = new ArrayList<BookLoans>();
+		//Here i am returning the books that a borrower has checked out.
+		BookLoansDAO bldao = new BookLoansDAO(conn);
+		
+		while(rs.next()){
+			BookLoans b = new BookLoans();
+			b.setDateOut(rs.getTimestamp("dateOut"));
+			b.setDateIn(rs.getTimestamp("dueDate"));
+			b.setDueDate(rs.getTimestamp("dateIn"));
+			Borrower brr = new Borrower();
+			brr.setCardNo(rs.getInt("cardNo"));
+			b.setBorrower(brr);
+			
+			Book bo = new Book();
+			bo.setBookId(rs.getInt("cardNo"));
+			b.setBooks(bo);
+			Library lib = new Library();
+			lib.setBranchId(rs.getInt("branchId"));
+			b.setBranch(lib);
+			bookLoans.add(b);
+		}
+		return bookLoans;
+	}
+	public void updateDueDate(BookLoans bl, int value) throws ClassNotFoundException, SQLException{
+		saveWithID(
+				"UPDATE tbl_book_loans SET dueDate = DATE_ADD(CURDATE(),INTERVAL ? DAY) WHERE bookId = ? AND branchId = ? AND cardNo = ?;",
+				new Object[] { value, bl.getBooks().getBookId(),
+						bl.getBranch().getBranchId(),
+						bl.getBorrower().getCardNo() });
+		return;
+		}
+
+}
