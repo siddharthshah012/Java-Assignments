@@ -8,7 +8,9 @@
 
 <% 
 AdminService adminService = new AdminService();
-List<Borrower> borrower = adminService.getAllBorrower(); %>
+List<Borrower> borrower = adminService.getAllBorrower(); 
+out.println(borrower);
+%>
 <div class="jumbotron">
 
 	<h1>Welcome to GCIT Library Management System</h1>
@@ -18,9 +20,9 @@ List<Borrower> borrower = adminService.getAllBorrower(); %>
 	<table class="table">
 		<tr>
 			<th>ID</th>
-			<th>Publisher Name</th>
-			<th>Publisher Address</th>
-			<th>Publisher Phone</th>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
 			<th>EDIT</th>
 			<th>DELETE</th>
 		</tr>
@@ -30,10 +32,22 @@ List<Borrower> borrower = adminService.getAllBorrower(); %>
 			<td><%=b.getName()%></td>
 			<td><%=b.getAddress()%></td>
 			<td><%=b.getPhone() %></td>
-			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='editBorrower?cardNo=<%=b.getCardNo()%>'">EDIT!</button></td>			
+			<td><button type="button" class="btn btn-sm btn-success" 
+				data-toggle="modal" data-target="#editBorModal"
+				href="editborrower.jsp?cardNo=<%=b.getCardNo()%>">EDIT!</button></td>			
 			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteBorrower?cardNo=<%=b.getCardNo()%>'">Delete!</button></td>	
 		</tr>
 		<%} %>
 	</table>
 
 </div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1"
+	id="editBorModal" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+				
+		</div>
+	</div>
+</div>
+

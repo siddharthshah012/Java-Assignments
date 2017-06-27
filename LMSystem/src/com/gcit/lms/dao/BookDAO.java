@@ -88,6 +88,19 @@ public class BookDAO extends BaseDAO{
 		}
 		return books;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Book> readAllBookswithBranch(int branchId)
+			throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		// setPageNo(pageNo);
+		System.out.println("branch in dao"+ branchId);
+		return (List<Book>) read(
+				"select * from tbl_book where bookId in "
+				+ "(select bc.bookId from tbl_book_copies as bc where bc.branchId = ? and noOfCopies>0)",
+				new Object[] { branchId });
+	}
+	
 
 	public void addBookAuthors(Integer bookId, Integer authorId) {
 		// TODO Auto-generated method stub

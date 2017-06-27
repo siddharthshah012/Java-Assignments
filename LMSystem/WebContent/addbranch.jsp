@@ -13,7 +13,7 @@
 		Enter Address to be added: <input type="text" name="branchAddress"><br />
 		
 		<button type="submit">Add Branch!</button>
-		</select>
+		
 		
 	</form>
 </div>

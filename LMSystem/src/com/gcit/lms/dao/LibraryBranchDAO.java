@@ -36,14 +36,21 @@ public class LibraryBranchDAO extends BaseDAO{
 				new Object[] { library.getBranchId() });
 	}
 	
-	public List<?> readLibBranchByID(Integer branchId)
+	
+	@SuppressWarnings("unchecked")
+	public List<Library> readAllBranches() throws ClassNotFoundException, SQLException{
+		//setPageNo(pageNo);
+		return (List<Library>) read("select * from tbl_library_branch", null);
+	}
+	
+	public Library readLibBranchByID(Integer branchId)
 			throws ClassNotFoundException, SQLException {
 		@SuppressWarnings("unchecked")
 		List<Library> library = (List<Library>) read(
 				"select * from tbl_library_branch where branchId = ?",
 				new Object[] { branchId });
 		if (library != null && !library.isEmpty()) {
-			return (List<?>) library.get(0);
+			return (Library) library.get(0);
 		}
 		return null;
 	}

@@ -1,0 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+
+    
+<%@page import="com.gcit.lms.entity.Borrower"%>
+<%@page import="com.gcit.lms.entity.Publisher"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+    
+
+<%
+	Integer cardNo = Integer.parseInt(request.getParameter("cardNo"));
+	//out.println(publisherId);
+	AdminService service = new AdminService();
+	Borrower bor = service.getBorrowerByID(cardNo);
+	//out.println(publisher.getPublisherId());
+%>
+
+
+    
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal"
+		aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+			</button>
+				<h4 class="modal-title" id="myModalLabel">Edit Author Details</h4>
+</div>
+			
+<form action="editBorrower" method="post">
+	<div class="modal-body">
+		Enter Branch Details to be added: 
+		<input type="text" name="name" value="<%=bor.getName()%>"><br/>
+		<input type="text" name="address" value="<%=bor.getAddress()%>"><br/>
+		<input type="text" name="phone" value="<%=bor.getPhone()%>"><br/>
+		<input type="hidden" name="cardNo" value=<%=bor.getCardNo()%>>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="submit" class="btn btn-primary">Edit Borrower</button>
+	</div>
+</form>

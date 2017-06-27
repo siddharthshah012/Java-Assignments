@@ -2,6 +2,7 @@ package com.gcit.lms.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.gcit.lms.dao.AuthorDAO;
@@ -166,7 +167,7 @@ public class AdminService {
 			if (book.getBookId() != null) {
 				bdao.updateBook(book);
 			} else {
-				bdao.addBook(book);
+				//bdao.addBook(book);
 				Integer bookId = bdao.addBookWithID(book);
 				
 				if(book.getAuthors()!=null && !book.getAuthors().isEmpty()){
@@ -204,7 +205,8 @@ public class AdminService {
 		conn = cUtil.getConnection();
 		LibraryBranchDAO lbdao =  new LibraryBranchDAO(conn);
 		try {
-			if (branch.getBranchId() != 0) {
+			System.out.println("service" + branch.getBranchId());
+			if (branch.getBranchId() != null) {
 				lbdao.updateLibBranch(branch);
 			} else {
 				lbdao.addBranch(branch);
@@ -465,7 +467,7 @@ public class AdminService {
 		return null;
 	}
 	
-	public List<?> getBranchByID(Integer branchId) throws ClassNotFoundException, SQLException {
+	public Library getBranchByID(Integer branchId) throws ClassNotFoundException, SQLException {
 		Connection conn = null;
 		conn = cUtil.getConnection();
 		try{
@@ -710,6 +712,62 @@ public class AdminService {
 				conn.close();
 			}
 		}
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<BookLoans> getallBookloans(){
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		
+		BookLoansDAO bldao = new BookLoansDAO(conn);
+		
+		try {
+			return (List<BookLoans>) bldao.readallfromBookLoans();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	public void updateBookLoans(BookLoans bl, Integer value) throws SQLException{
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		
+		BookLoansDAO bldao = new BookLoansDAO(conn);
+		
+		try {
+			bldao.updateDueDate(bl, value);
+			conn.commit();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			conn.close();
+		}
+		
+		
+	}
+	
+	public BookLoans getallBookloansDateout(Timestamp t){
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		
+		BookLoansDAO bldao = new BookLoansDAO(conn);
+		
+		try {
+			return bldao.readBookLoansforDateout(t);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+		
 	}
 	
 }

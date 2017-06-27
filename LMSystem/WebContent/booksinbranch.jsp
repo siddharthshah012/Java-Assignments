@@ -3,7 +3,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.gcit.lms.entity.Library" %>
 <%@ page import="com.gcit.lms.entity.*" %>
-<%@include file="include.html" %>
+
 
 <%@page import="com.gcit.lms.web.*" %>
 <% Integer branchId = Integer.parseInt(request.getParameter("branchId")); %>
@@ -35,7 +35,7 @@
 			<input type="hidden" name = "branchId" value=<%=branchId%>>
 			<input type="hidden" name = "cardNo" value=<%=cardNo %>>
 			
-			<input type="submit"  class="btn btn-sm btn-primary">SELECT!</form></td>
+			<button type="submit"  class="btn btn-sm btn-primary">SELECT!</button></form></td>
 			
 		<%} %>
 		</tr>

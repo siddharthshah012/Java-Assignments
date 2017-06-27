@@ -9,20 +9,31 @@ public class Library implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -7505385429936727654L;
-	private int branchId;
+	private Integer branchId;
 	private String branchName;
 	private String branchAddress;
+	
+	
+	/**
+	 * @return the branchId
+	 */
+	public Integer getBranchId() {
+		return branchId;
+	}
+
+	/**
+	 * @param branchId the branchId to set
+	 */
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+
+
 
 	/** the books found in this branch. */
 	private List<Book> books;
 
-	public int getBranchId() {
-		return branchId;
-	}
-
-	public void setBranchId(int branchId) {
-		this.branchId = branchId;
-	}
+	
 
 	public String getBranchName() {
 		return branchName;

@@ -2,7 +2,12 @@ package com.gcit.lms.web;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -14,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.BookLoans;
 import com.gcit.lms.entity.Borrower;
 import com.gcit.lms.entity.Genre;
 import com.gcit.lms.entity.Library;
@@ -24,9 +30,9 @@ import com.gcit.lms.service.AdminService;
  * Servlet implementation class AdminServlet
  */
 @WebServlet({ "/addAuthor", "/deleteAuthor", "/editAuthor", "/pageAuthors", "/searchAuthors",
-			/*"/addBook","/deleteBook","editBook","/addBranch","/deleteBranch","/editBranch", 
-			"/addBorrower","/deleteBorrower","/editBorrower",*/"/addPublisher","/deletePublisher",
-			"/editPublisher"})
+			"/addBook","/deleteBook"/*,"editBook"*/,"/addBranch","/deleteBranch","/editBranch", 
+			"/addBorrower","/deleteBorrower","/editBorrower","/addPublisher","/deletePublisher",
+			"/editPublisher","/overrideDuedate"})
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -154,7 +160,7 @@ public class AdminServlet extends HttpServlet {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								path="/viewBorrowers.jsp";
+								path="/viewBorrower.jsp";
 								break;
 		default:
 			break;
@@ -281,11 +287,11 @@ public class AdminServlet extends HttpServlet {
 							RequestDispatcher rd5 = request.getRequestDispatcher("/viewpublishers.jsp");
 							rd5.forward(request, response);
 							break;
-		case"/editBorrowers":Borrower bow = new Borrower();
+		case"/editBorrower":Borrower bow = new Borrower();
 							
-							bow.setName(request.getParameter("borrowerName"));
-							bow.setAddress(request.getParameter("borrowerAddress"));
-							bow.setPhone(request.getParameter("borrowerPhone"));
+							bow.setName(request.getParameter("name"));
+							bow.setAddress(request.getParameter("address"));
+							bow.setPhone(request.getParameter("phone"));
 							bow.setCardNo(Integer.parseInt(request.getParameter("cardNo")));
 		
 							try {
@@ -298,7 +304,7 @@ public class AdminServlet extends HttpServlet {
 								e.printStackTrace();
 							}
 							
-							RequestDispatcher rd6 = request.getRequestDispatcher("/viewBorrowers.jsp");
+							RequestDispatcher rd6 = request.getRequestDispatcher("/viewBorrower.jsp");
 							rd6.forward(request, response);
 							
 							break;
@@ -307,7 +313,9 @@ public class AdminServlet extends HttpServlet {
 							lib1.setBranchName(request.getParameter("branchName"));
 							lib1.setBranchAddress(request.getParameter("branchAddress"));
 							lib1.setBranchId(Integer.parseInt((request.getParameter("branchId"))));
-				
+							//lib1.setBranchId(Integer.parseInt((request.getParameter("branchId"))));
+							//System.out.println(lib1.getBranchId());
+							
 							try {
 								adminService.saveBranch(lib1);
 							} catch (Exception e) {
@@ -318,8 +326,33 @@ public class AdminServlet extends HttpServlet {
 							RequestDispatcher rd7 = request.getRequestDispatcher("/viewBranch.jsp");
 							rd7.forward(request, response);
 							break;
+		case"/overrideDuedate":BookLoans bl = new BookLoans();
+								
+								System.out.println(request.getParameter("dateOut"));
+								SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+								Date parsedDate = null;
+								try {
+									parsedDate = df.parse(request.getParameter("dateOut"));
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+								
+								System.out.println(timestamp);
+		
+							bl.setDateOut(timestamp);
+							int value = Integer.parseInt(request.getParameter("extendDays"));
+							try {
+								adminService.updateBookLoans(bl, value);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							
-							
+							RequestDispatcher rd8 = request.getRequestDispatcher("/override.jsp");
+							rd8.forward(request, response);
+							break;
 			default:
 				break;
 		}
@@ -336,15 +369,6 @@ public class AdminServlet extends HttpServlet {
 		
 		book.setTitle(request.getParameter("bookName"));
 		
-		try {
-			adminService.saveBook(book);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		try{
 			title = request.getParameter("bookName");

@@ -3,6 +3,7 @@ package com.gcit.lms.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,15 @@ public class BookLoansDAO extends BaseDAO {
 		return null;
 		}
 	}
+	
+	public BookLoans readBookLoansforDateout(Timestamp t) throws SQLException{
+		return (BookLoans) read("SELECT * FROM tbl_book_loans WHERE dateOut=?", new Object[]{t});
+	} 
+	
+	public List<?> readallfromBookLoans() throws SQLException{
+		
+		return read("SELECT * FROM tbl_book_loans where dueDate> NOW() and dateIn is null ;", null);
+	}
 	public List<?> readallBookswithcardNumber(BookLoans bookloans) throws SQLException{
 		
 		return (List<?>) read(
@@ -65,7 +75,7 @@ public class BookLoansDAO extends BaseDAO {
 		
 	}*/
 	
-	@Override
+	/*@Override
 	public List<?> extractData(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
 		/*List<BookLoans> bookLoans = new ArrayList<BookLoans>();
@@ -88,11 +98,11 @@ public class BookLoansDAO extends BaseDAO {
 
 			bookLoans.add(b);
 		}*/
-		return null;
+		/*return null;
 		
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
 		List<BookLoans> bookLoans = new ArrayList<BookLoans>();
@@ -117,14 +127,49 @@ public class BookLoansDAO extends BaseDAO {
 			bookLoans.add(b);
 		}
 		return bookLoans;
-	}
+	}*/
+	
+	
+	public List<BookLoans> extractData(ResultSet rs) throws SQLException {
+		List<BookLoans> loans = new ArrayList<>();
+		BookDAO bdao = new BookDAO(conn);
+		LibraryBranchDAO brdao = new LibraryBranchDAO(conn);
+		BorrowerDAO bodao = new BorrowerDAO(conn);
+		while(rs.next())
+		{
+		BookLoans l = new BookLoans();
+		l.setDateOut(rs.getTimestamp("dateOut"));
+		l.setDueDate(rs.getTimestamp("dueDate"));
+		l.setDateIn(rs.getTimestamp("dateIn"));
+		List<Book> bo = (List<Book>) bdao.readFirstLevel("select * from tbl_book where bookId IN (Select bookId from tbl_book_loans where dateOut = ?)", new Object[]{l.getDateOut()});
+		if(!bo.isEmpty())
+		l.setBooks(bo.get(0));
+		List<Borrower> bor = (List<Borrower>)bodao.readFirstLevel("select * from tbl_borrower where cardNo IN (Select cardNo from tbl_book_loans where dateOut = ?)", new Object[]{l.getDateOut()});
+		if(!bor.isEmpty())
+		l.setBorrower(bor.get(0));
+		List<Library> br = (List<Library>)brdao.readFirstLevel("select * from tbl_library_branch where branchId IN (Select branchId from tbl_book_loans where dateOut = ?)", new Object[]{l.getDateOut()});
+		if(!br.isEmpty())
+		l.setBranch(br.get(0));
+		loans.add(l);
+		}
+		return loans;
+		}
+
+	
+	
+	
+	
 	public void updateDueDate(BookLoans bl, int value) throws ClassNotFoundException, SQLException{
 		saveWithID(
-				"UPDATE tbl_book_loans SET dueDate = DATE_ADD(CURDATE(),INTERVAL ? DAY) WHERE bookId = ? AND branchId = ? AND cardNo = ?;",
-				new Object[] { value, bl.getBooks().getBookId(),
-						bl.getBranch().getBranchId(),
-						bl.getBorrower().getCardNo() });
-		return;
+				"UPDATE tbl_book_loans SET dueDate = DATE_ADD(NOW(),INTERVAL ? DAY) WHERE dateOut=?",
+				new Object[] { value, bl.getDateOut(),
+						 });
+		
 		}
+	@Override
+	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
