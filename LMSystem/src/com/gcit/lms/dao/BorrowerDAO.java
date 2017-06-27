@@ -94,7 +94,7 @@ public class BorrowerDAO extends BaseDAO{
 	@SuppressWarnings("unchecked")
 	public Borrower readBorrowerByID(Integer cardNo) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		List<Borrower> borrower = (List<Borrower>) read("select cardNo from tbl_borrower where cardNo = ?", new Object[] {cardNo});
+		List<Borrower> borrower = (List<Borrower>) read("select cardNo from tbl_borrower where cardNo = ?;", new Object[] {cardNo});
 		System.out.println("borrower" +  borrower);
 		System.out.println("size" + borrower.size());
 		if(borrower!=null && borrower.size() >0){
@@ -105,7 +105,6 @@ public class BorrowerDAO extends BaseDAO{
 			return null;
 			}
 	}
-	
 	
 
 	@SuppressWarnings("unchecked")
