@@ -117,16 +117,16 @@ public class AdminService {
 	
 /****************************************************************************************/	
 	
-	public List<Book> getAllBooks(Integer pageNo, String searchString) throws SQLException {
+	public List<Book> getAllBooks(Integer pageNo1, String searchString) throws SQLException {
 		Connection conn = null;
 		conn = cUtil.getConnection();
 		BookDAO bdao = new BookDAO(conn);
 		try {
 			if (searchString != null) {
-				return bdao.readAllBooksByTitle(pageNo,searchString);
+				return bdao.readAllBooksByTitle(pageNo1,searchString);
 			}
 			else{
-				return bdao.readAllBooks(pageNo);
+				return bdao.readAllBooks(pageNo1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

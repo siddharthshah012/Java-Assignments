@@ -108,17 +108,27 @@ public class AdminServlet extends HttpServlet {
 									message = "Book delete failed. Try Again!";
 								}
 							}
+							
+							request.setAttribute("message", message);
+							RequestDispatcher rd = request.getRequestDispatcher("/viewbooks.jsp");
+							rd.forward(request, response);
+							isAjax = Boolean.TRUE;
+							
 							break;
 		case "/pageBooks":
 							if (request.getParameter("pageNo") != null && !request.getParameter("pageNo").isEmpty()) {
-								Integer pageNo = Integer.parseInt(request.getParameter("pageNo"));
+								Integer pageNo1 = Integer.parseInt(request.getParameter("pageNo"));
 				
 								try {
-									List<Book> books = adminService.getAllBooks(pageNo, null);
+									List<Book> books = adminService.getAllBooks(pageNo1, null);
 									request.setAttribute("books", books);
 								} catch (SQLException e) {
 									e.printStackTrace();
 								}
+								request.setAttribute("message", message);
+								RequestDispatcher rd1 = request.getRequestDispatcher("/viewbooks.jsp");
+								rd1.forward(request, response);
+								isAjax = Boolean.TRUE;
 							}
 							break;
 							
@@ -147,6 +157,7 @@ public class AdminServlet extends HttpServlet {
 								}
 								
 								response.getWriter().write(strBuf1.toString());
+								isAjax = Boolean.TRUE;
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

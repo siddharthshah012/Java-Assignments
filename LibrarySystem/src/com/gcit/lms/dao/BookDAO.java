@@ -34,14 +34,15 @@ public class BookDAO extends BaseDAO{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Book> readAllBooks(Integer pageNo) throws SQLException{
+	public List<Book> readAllBooks(Integer pageNo1) throws SQLException{
+		setPageNo(pageNo1);
 		return (List<Book>) read("select * from tbl_book", null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Book> readAllBooksByTitle(Integer pageNo, String searchString) throws SQLException{
+	public List<Book> readAllBooksByTitle(Integer pageNo1, String searchString) throws SQLException{
 		searchString = "%"+searchString+"%";
-		setPageNo(pageNo);
+		setPageNo(pageNo1);
 		return (List<Book>) read("select * from tbl_book where title like ?", new Object[]{searchString});
 	}
 	
