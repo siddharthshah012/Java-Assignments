@@ -7,24 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.ResultSetExtractor;
+
 import com.gcit.lms.entity.Borrower;
 
-public class BorrowerDAO extends BaseDAO{
-
-	public BorrowerDAO(Connection conn) {
-		super(conn);
-		// TODO Auto-generated constructor stub
-	}
+public class BorrowerDAO extends BaseDAO implements ResultSetExtractor<List<Borrower>>{
 
 	@Override
-	public List<?> extractData(ResultSet rs) throws SQLException {
+	public List<Borrower> extractData(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		List<Borrower> borrowers = new ArrayList<>();
 		while(rs.next()){
 			Borrower b = new Borrower();
@@ -36,24 +28,22 @@ public class BorrowerDAO extends BaseDAO{
 		}
 		return borrowers;
 	}
+
 	
 	public void addBorrower(Borrower borrower) throws SQLException {
-		save("Insert into tbl_borrower(name,address,phone) values (?,?,?)",
+		template.update("Insert into tbl_borrower(name,address,phone) values (?,?,?)",
 				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone()});
 	}
 	
-	public Integer addBorrowerWithId(Borrower borrower) throws SQLException {
-		return saveWithID("Insert into tbl_borrower(name,address,phone) values (?,?,?)",
-				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone()});
-	}
+
 	
 	public void updateBorrower(Borrower borrower) throws SQLException {
-		save("Update tbl_borrower set name= ?, address=?, phone=? where cardNo = ?",
+		template.update("Update tbl_borrower set name= ?, address=?, phone=? where cardNo = ?",
 				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone(), borrower.getCardNo() });
 	}
 	
 	public void deleteBorrower(Borrower borrower) throws SQLException {
-		save("delete from tbl_borrower where cardNo = ?", new Object[] {borrower.getCardNo()});
+		template.update("delete from tbl_borrower where cardNo = ?", new Object[] {borrower.getCardNo()});
 
 	}
 
@@ -61,32 +51,17 @@ public class BorrowerDAO extends BaseDAO{
 	public List<Borrower> readAllBorrowers() throws SQLException {
 		// TODO Auto-generated method stub
 		//System.out.println("Here");
-		return  (List<Borrower>) read("select * from tbl_borrower", null);
+		return template.query("select * from tbl_borrower", this);
 	}
 
-	public int CheckCard(Integer cardNo) {
-		// TODO Auto-generated method stub
-		try {
-			System.out.println("checkin DAO");
-			String query = "select count(*) as ct from tbl_borrower where cardNo = "+cardNo+";";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
-			int count=0;
-			while (rs.next()){
-				count = rs.getInt("ct");
-			}
-			if (count !=0){
-				return count;
-			}
-			else{
-				return 0;
-			}//return getCount("select count(*) from tbl_borrower where cardNo = ?",new Object[] {cardNo});
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public Integer CheckCard(Integer cardNo) throws ClassNotFoundException, SQLException{
+		
+		Integer check = readBorrowerByID(cardNo).getCardNo();
+		if (check  != 0)
+		return check;
+		else{
+			return 0;
 		}
-		//return 0;
-		return 0;
 	}
 	
 	
@@ -94,7 +69,7 @@ public class BorrowerDAO extends BaseDAO{
 	@SuppressWarnings("unchecked")
 	public Borrower readBorrowerByID(Integer cardNo) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		List<Borrower> borrower = (List<Borrower>) read("select cardNo from tbl_borrower where cardNo = ?;", new Object[] {cardNo});
+		List<Borrower> borrower = (List<Borrower>) template.query("select cardNo from tbl_borrower where cardNo = ?;", new Object[] {cardNo},this);
 		System.out.println("borrower" +  borrower);
 		System.out.println("size" + borrower.size());
 		if(borrower!=null && borrower.size() >0){
@@ -110,12 +85,12 @@ public class BorrowerDAO extends BaseDAO{
 	@SuppressWarnings("unchecked")
 	public List<Borrower> readBorrowerByName(String searchString) throws SQLException {
 		// TODO Auto-generated method stub
-		return (List<Borrower>) read("select * from tbl_borrower where name like ?", new Object[] {searchString});
+		return (List<Borrower>) template.query("select * from tbl_borrower where name like ?", new Object[] {searchString},this);
 	}
 
-	public Integer getBorrowerCount() throws ClassNotFoundException, SQLException {
+	public List<Borrower> getBorrowerCount() throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		return getCount("select count(*) from tbl_borrower;", null);
+		return template.query("select count(*) from tbl_borrower;", this);
 	}
 
 }

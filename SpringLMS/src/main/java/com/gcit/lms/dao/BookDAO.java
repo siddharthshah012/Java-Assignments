@@ -1,13 +1,20 @@
 package com.gcit.lms.dao;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import com.gcit.lms.entity.Book;
 import com.gcit.lms.entity.Publisher;
@@ -18,9 +25,19 @@ public class BookDAO extends BaseDAO implements ResultSetExtractor<List<Book>>{
 		template.query("insert into tbl_book(title) values (?)", new Object[] {book.getTitle()},this);
 	}
 	
-//	public Integer addBookWithID(Book book) throws SQLException{
-//		return saveWithID("insert into tbl_book(title) values (?)", new Object[] {book.getTitle()});
-//	}
+	public Integer addBookWithID(Book book) throws SQLException {
+		KeyHolder holder = new GeneratedKeyHolder();
+		final String sql = "insert into tbl_book(title) values (?)";
+		template.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, book.getTitle());
+				return ps;
+			}
+		}, holder);
+		return holder.getKey().intValue();
+	}
 	
 	public void updateBook(Book book) throws SQLException{
 		template.query("update tbl_book set title =? where bookId = ?", new Object[] {book.getTitle(), book.getBookId()},this);
@@ -41,15 +58,15 @@ public class BookDAO extends BaseDAO implements ResultSetExtractor<List<Book>>{
 		setPageNo(pageNo1);
 		return (List<Book>) template.query("select * from tbl_book where title like ?", new Object[]{searchStringB},this);
 	}
-//	
-//	@SuppressWarnings("unchecked")
-//	public Book readBooksByPK(Integer bookId) throws SQLException{
-//		List<Book> books = (List<Book>) read("select * from tbl_book where bookId = ?", new Object[]{bookId});
-//		if(books!=null){
-//			return books.get(0);
-//		}
-//		return null;
-//	}
+	
+	public Book readBooksByPK(Integer bookId) throws SQLException {
+		List<Book> books = (List<Book>) template.query("select * from tbl_book where bookId = ?",
+				new Object[] { bookId }, this);
+		if (books != null) {
+			return books.get(0);
+		}
+		return null;
+	}
 	
 	
 	public List<Book> readAllBookswithBranch(int branchId)
@@ -82,17 +99,20 @@ public class BookDAO extends BaseDAO implements ResultSetExtractor<List<Book>>{
 		return books;
 	}
 		
-//
-//	public Integer getBooksCount() throws SQLException {
-//		// TODO Auto-generated method stub
-//		return getCount("select count(*) as COUNT from tbl_book", null);
-//	}
+	public Integer getBooksCount() throws SQLException {
+		// TODO Auto-generated method stub
+		return template.queryForObject("select count(*) as COUNT from tbl_book", Integer.class);
+	}
 	
 	public void addBookAuthors(Integer bookId, Integer authorId) throws SQLException {
 		// TODO Auto-generated method stub
 		
 		template.update("insert into tbl_book_authors values (?, ?)", new Object[] {bookId, authorId});
 		
+	}
+	
+	public List<Book> readAllBooksByAuthorId(Integer authorId) throws SQLException {
+		return template.query("select * from tbl_book where bookId in (select bookId from tbl_book_authors where authorId = ?)", new Object[]{authorId}, this);
 	}
 
 	public void addBookGenres(Integer bookId, Integer genreId) throws SQLException {

@@ -18,8 +18,6 @@ public abstract class BaseDAO {
 	private Integer pageNo = 0;
 	private Integer pageSize = 10;
 
-	
-
 	public abstract List<?> extractData(ResultSet rs) throws SQLException;
 
 	/**

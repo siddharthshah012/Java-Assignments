@@ -1,15 +1,20 @@
 package com.gcit.lms.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+//import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import com.gcit.lms.entity.Author;
-import com.gcit.lms.entity.Book;
+import com.mysql.jdbc.Statement;
 
 public class AuthorDAO extends BaseDAO implements ResultSetExtractor<List<Author>>{
 
@@ -17,9 +22,20 @@ public class AuthorDAO extends BaseDAO implements ResultSetExtractor<List<Author
 		template.update("insert into tbl_author(authorName) values (?)", new Object[] {author.getAuthorName()});
 	}
 	
-//	public Integer addAuthorWithID(Author author) throws SQLException{
-//		return saveWithID("insert into tbl_author(authorName) values (?)", new Object[] {author.getAuthorName()});
-//	}
+	public Integer addAuthorWithID(Author author) throws SQLException{
+		
+		KeyHolder holder = new GeneratedKeyHolder();
+		final String sql = "insert into tbl_author(authorName) values (?)";
+		template.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, author.getAuthorName());
+				return ps;
+			}
+		}, holder);
+		return holder.getKey().intValue();
+	}
 	
 	public void updateAuthor(Author author) throws SQLException{
 		template.update("update tbl_author set authorName =? where authorId = ?", new Object[] {author.getAuthorName(), author.getAuthorId()});
@@ -29,17 +45,15 @@ public class AuthorDAO extends BaseDAO implements ResultSetExtractor<List<Author
 		template.update("delete from tbl_author where authorId = ?", new Object[] {author.getAuthorId()});
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<Author> readAllAuthors(Integer pageNo) throws SQLException{
 		setPageNo(pageNo);
 		return template.query("select * from tbl_author", this);
 	}
 	
-//	public Integer getAuthorsCount() throws SQLException{
-//		return getCount("select count(*) as COUNT from tbl_author", null);
-//	}
-//	
-	
+	public Integer getAuthorsCount() throws SQLException{
+		return template.queryForObject("select count(*) as COUNT from tbl_author", Integer.class);
+	}	
 	
 	public List<Author> readAllAuthorsByName(Integer pageNo, String searchString) throws SQLException{
 		searchString = "%"+searchString+"%";

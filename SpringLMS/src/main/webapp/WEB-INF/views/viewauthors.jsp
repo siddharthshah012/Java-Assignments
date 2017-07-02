@@ -1,59 +1,39 @@
-<%@include file="include.html"%>
-<%@page import="com.gcit.lms.entity.Book"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.gcit.lms.entity.Author"%>
-<%@page import="java.util.List"%>
-<%@page import="com.gcit.lms.service.AdminService"%>
+<%@ taglib prefix="gcit" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring"
+	uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<%
-	AdminService adminService = new AdminService();
-	List<Author> authors = new ArrayList<>();
-	Integer authCount = adminService.getAuthorsCount();
-	int pages = 0;
-	if (authCount % 10 > 0) {
-		pages = authCount / 10 + 1;
-	} else {
-		pages = authCount / 10;
-	}
-	if (request.getAttribute("authors") != null) {
-		authors = (List<Author>) (request.getAttribute("authors"));
-	} else {
-		authors = adminService.getAllAuthors(1, null);
-	}
-%>
+<%@include file="include.html"%>
 
 <script>
-function searchAuthors(){
-	$.ajax({
-		url: "searchAuthors",
-		data:{
-			searchString: $('#searchString').val()
-		}
-	}).done(function (data){
-		$('#authorsTable').html(data)
-	})
-}
-
+	function searchAuthors() {
+		$.ajax({
+			url : "searchAuthors",
+			data : {
+				searchString : $('#searchString').val()
+			}
+		}).done(function(data) {
+			$('#authorsTable').html(data)
+		})
+	}
 </script>
 <div class="jumbotron">
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Below are the list of Authors in LMS</h2>
 	${message}
 	<div>
-			<input type="text" name="searchString"  id="searchString"  placeholder="Author Name" aria-describedby="basic-addon1" oninput="searchAuthors()">
+		<input type="text" name="searchString" id="searchString"
+			placeholder="Author Name" aria-describedby="basic-addon1"
+			oninput="searchAuthors()">
 	</div>
 	<nav aria-label="Page navigation">
 		<ul class="pagination">
 			<li><a href="#" aria-label="Previous"> <span
 					aria-hidden="true">&laquo;</span>
 			</a></li>
-			<%
-				for (int i = 1; i <= pages; i++) {
-			%>
-			<li><a href="pageAuthors?pageNo=<%=i%>"><%=i%></a></li>
-			<%
-				}
-			%>
+			<gcit:forEach var="i" begin="1" end="${pages}">
+				<li><a href="pageAuthors?pageNo=${i}">${i}</a></li>
+			</gcit:forEach>
 			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 			</a></li>
 		</ul>
@@ -66,28 +46,20 @@ function searchAuthors(){
 			<th>Edit</th>
 			<th>Delete</th>
 		</tr>
-		<%
-			for (Author a : authors) {
-		%>
-		<tr>
-			<td><%=authors.indexOf(a) + 1%></td>
-			<td><%=a.getAuthorName()%></td>
-			<td>
-				<%
-					for (Book b : a.getBooks()) {
-							out.println(b.getTitle() + "|");
-						}
-				%>
-			</td>
-			<td><button type="button" class="btn btn-sm btn-primary"
-					data-toggle="modal" data-target="#editAuthorModal"
-					href="editauthor.jsp?authorId=<%=a.getAuthorId()%>">Edit!</button></td>
-			<td><button type="button" class="btn btn-sm btn-danger"
-					onclick="javascript:location.href='deleteAuthor?authorId=<%=a.getAuthorId()%>'">Delete!</button></td>
-		</tr>
-		<%
-			}
-		%>
+		<gcit:forEach items="${authors}" var="a">
+			<tr>
+				<td>${a.authorId}</td>
+				<td>${a.authorName}</td>
+				<td><gcit:forEach var="b" items="${a.books}">
+				${b.title} |
+				</gcit:forEach></td>
+				<td><button type="button" class="btn btn-sm btn-primary"
+						data-toggle="modal" data-target="#editAuthorModal"
+						href="editauthor.jsp?authorId=${a.authorId}">Edit!</button></td>
+				<td><button type="button" class="btn btn-sm btn-danger"
+						onclick="javascript:location.href='deleteAuthor?authorId=${a.authorId}'">Delete!</button></td>
+			</tr>
+		</gcit:forEach>
 	</table>
 </div>
 

@@ -1,40 +1,54 @@
 package com.gcit.lms.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gcit.lms.entity.Book;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
 import com.gcit.lms.entity.Publisher;
 
-public class PublisherDAO extends BaseDAO  {
+public class PublisherDAO extends BaseDAO  implements ResultSetExtractor<List<Publisher>>{
 
-	public PublisherDAO(Connection conn) {
-		super(conn);
-		// TODO Auto-generated constructor stub
-	}
-
-	
 	public void addPublisher(Publisher publisher) throws SQLException {
 		System.out.println("in dao " + publisher.getPublisherName());
-		save("Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)",
+		template.update("Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)",
 				new Object[] { publisher.getPublisherName(),
 						publisher.getPublisherAddress(),
 						publisher.getPublisherPhones() });
 	}
 
 	public Integer addPublisherWithId(Publisher publisher) throws SQLException {
-		return saveWithID(
-				"Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)",
-				new Object[] { publisher.getPublisherName(),
-						publisher.getPublisherAddress(),
-						publisher.getPublisherPhones() });
+		
+		KeyHolder holder = new GeneratedKeyHolder();
+		final String sql =  "Insert into tbl_publisher(publisherName,publisherAddress,publisherPhone) values (?,?,?)";
+				
+		template.update(new PreparedStatementCreator() {
+			
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection)
+					throws SQLException {
+				// TODO Auto-generated method stub
+				PreparedStatement ps = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1,publisher.getPublisherName());
+				ps.setString(2, publisher.getPublisherAddress());
+				ps.setString(3, publisher.getPublisherPhones());
+				
+				return ps;
+			}
+		},holder);
+		return holder.getKey().intValue();
 	}
 
 	public void updatePublisher(Publisher publisher) throws SQLException {
-		save("Update tbl_publisher set publisherName= ?, publisherAddress=?, publisherPhone=? where publisherId = ?",
+		template.update("Update tbl_publisher set publisherName= ?, publisherAddress=?, publisherPhone=? where publisherId = ?",
 				new Object[] { publisher.getPublisherName(),
 						publisher.getPublisherAddress(),
 						publisher.getPublisherPhones(),
@@ -42,7 +56,7 @@ public class PublisherDAO extends BaseDAO  {
 	}
 
 	public void deletePublisher(Publisher publisher) throws SQLException {
-		save("delete from tbl_publisher where publisherId = ?",
+		template.update("delete from tbl_publisher where publisherId = ?",
 				new Object[] { publisher.getPublisherId() });
 
 	}
@@ -51,7 +65,7 @@ public class PublisherDAO extends BaseDAO  {
 	@SuppressWarnings("unchecked")
 	public List<Publisher> readAllPublisher(Integer pageNo) throws ClassNotFoundException, SQLException {
 		setPageNo(pageNo);
-		return (List<Publisher>) read("select * from tbl_publisher", null);
+		return (List<Publisher>) template.query("select * from tbl_publisher", this);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -59,57 +73,31 @@ public class PublisherDAO extends BaseDAO  {
 			throws SQLException {
 		searchString = "%" + searchString + "%";
 		setPageNo(pageNo);
-		return (List<Publisher>) read(
+		return (List<Publisher>) template.query(
 				"select * from tbl_publisher where publisherName like ?",
-				new Object[] { searchString });
+				new Object[] { searchString }, this);
 	}
 	
 	public Integer getPublishersCount() throws SQLException{
-		return getCount("select count(*) as COUNT from tbl_publisher", null);
+		return template.queryForObject("select count(*) as COUNT from tbl_publisher", Integer.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Publisher readPublishersByPK(Integer publisherId)
 			throws SQLException {
-		List<Publisher> publishers = (List<Publisher>) read(
+		List<Publisher> publishers = (List<Publisher>) template.query(
 				"select * from tbl_publisher where publisherId=?",
-				new Object[] { publisherId });
+				new Object[] { publisherId },this);
 		if (publishers != null) {
 			return publishers.get(0);
 		}
 		return null;
 
 	}
-	
-	
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<?> extractData(ResultSet rs) throws SQLException {
-		// TODO Auto-generated method stub
-
-
-		List<Publisher> publisher = new ArrayList<Publisher>();
-		BookDAO bdao = new BookDAO(conn);
-		
-		while(rs.next()){
-			Publisher b = new Publisher();
-			b.setPublisherId(rs.getInt("publisherId"));
-			b.setPublisherName(rs.getString("publisherName"));
-			b.setPublisherAddress(rs.getString("publisherAddress"));
-			b.setPublisherPhones(rs.getString("publisherPhone"));
-			
-			if ((b.getBooks() != null && b.getBooks().size() > 0)){
-			for(Book bo: b.getBooks())
-				b.setBooks((List<Book>) bdao.readFirstLevel("select * from tbl_book where bookId = ?)", new Object[] {bo.getBookId()}));
-		   }
-			publisher.add(b);
-		}
-		return publisher;
-	}
-
-	@Override
-	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+	public List<Publisher> extractData(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
 
 		List<Publisher> publisher = new ArrayList<Publisher>();
@@ -120,11 +108,10 @@ public class PublisherDAO extends BaseDAO  {
 			b.setPublisherName(rs.getString("publisherName"));
 			b.setPublisherAddress(rs.getString("publisherAddress"));
 			b.setPublisherPhones(rs.getString("publisherPhone"));
-			
 			publisher.add(b);
 		}
 		return publisher;
-		
 	}
+
 
 }
