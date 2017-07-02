@@ -14,13 +14,13 @@ import com.gcit.lms.entity.LibraryBranch;
 
 public class BookCopiesDAO extends BaseDAO implements ResultSetExtractor<List<BookCopies>>{
 
-	public void Insertbook_copies(Book book, LibraryBranch branch,
+	public void insertBookCopies(Book book, LibraryBranch branch,
 			Integer copies) throws ClassNotFoundException, SQLException {
 		template.update("insert into tbl_book_copies (bookId, branchId, noOfCopies) values (?, ?, ?)",
 				new Object[] { book.getBookId(), branch.getBranchId(), copies });
 	}
 	// /librarian service.
-	public void Updatebook_copies(Book book, LibraryBranch branch,
+	public void updateBookCopies(Book book, LibraryBranch branch,
 			Integer copies) throws ClassNotFoundException, SQLException {
 		template.update("update tbl_book_copies set noOfCopies= ? where bookId = ? and branchId = ?",
 				new Object[] { book.getBookId(), branch.getBranchId(), copies });

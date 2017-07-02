@@ -59,21 +59,21 @@ public class BookLoansDAO extends BaseDAO implements ResultSetExtractor<List<Boo
 				+ "cardNo IN "
 				+ "(SELECT name from tbl_borrower where name = ? and cardNo = cardNo); ",new Object[]{searchstring},this);
 	}
-	public List<?> readallBookswithcardNumber(BookLoans bookloans) throws SQLException{
+	public List<BookLoans> readallBookswithcardNumber(BookLoans bookloans) throws SQLException{
 		
-		return (List<?>) template.query(
+		return template.query(
 				"SELECT * from tbl_book_loans where cardNo=? and dateIn is NULL;",
 				new Object[] { bookloans.getBorrower().getCardNo() },this);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<?> readBooksforCardNo(BookLoans bookloans)
+	
+	public List<BookLoans> readBooksforCardNo(BookLoans bookloans)
 			throws ClassNotFoundException, SQLException { // return the book
 															// object.!!
 		// TODO Auto-generated method stub
 		
 		System.out.println("IN DAO");
-		return (List<?>) template.query(
+		return template.query(
 				"select * from tbl_book as bk where bk.bookId IN "
 				+ "(select bookId from tbl_book_loans where cardNo=? and dateIn is NULL );",
 				new Object[] { bookloans.getBorrower().getCardNo()},this);
