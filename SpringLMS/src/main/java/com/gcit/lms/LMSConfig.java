@@ -14,6 +14,8 @@ import com.gcit.lms.dao.GenreDAO;
 import com.gcit.lms.dao.LibraryBranchDAO;
 import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.service.AdminService;
+import com.gcit.lms.service.BorrowerService;
+import com.gcit.lms.service.LibrarianService;
 
 
 @Configuration
@@ -89,6 +91,17 @@ public class LMSConfig {
 	@Bean
 	public BookCopiesDAO bookCopiesDAO(){
 		return new BookCopiesDAO();
+	}
+	
+	@Bean
+
+	public BorrowerService borrowerService(){
+		return new BorrowerService();
+	}
+
+	@Bean
+	public LibrarianService librarianService(){
+		return new LibrarianService();
 	}
 
 }

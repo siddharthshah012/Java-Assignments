@@ -1,3 +1,7 @@
+<%@ taglib prefix="gcit" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring"
+	uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@page import="com.gcit.lms.entity.Book"%>
 <%@page import="java.util.List"%>
 <%@page import="com.gcit.lms.service.AdminService"%>

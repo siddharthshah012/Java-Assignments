@@ -71,13 +71,15 @@ public class BorrowerService {
 	}
 	
 	public List<BookLoans> readBooksforCardinTBL(BookLoans bookloans) throws SQLException{
-		
 			return bldao.readallBookswithcardNumber(bookloans);
-
 	}
 	public void returnBookloan(BookLoans bl) throws SQLException {
 		// TODO Auto-generated method stub
 			bldao.returnBookloans(bl);		
+	}
+	
+	public Integer getBranchesCount() throws SQLException{
+		return lbdao.getBranchesCount();
 	}
 		
 }

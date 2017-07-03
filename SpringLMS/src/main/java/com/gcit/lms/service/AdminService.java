@@ -189,7 +189,7 @@ public class AdminService {
 	/*************************************OVER-RIDE DUE DATE
 	 * @throws SQLException **********************************************/
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<BookLoans> getallBookloans(Integer pageNo, String searchString) throws SQLException{
 	
 			return bldao.readallfromBookLoans(pageNo);	
@@ -204,6 +204,18 @@ public class AdminService {
 		
 			return bldao.readBookLoansforDateout(t).get(0);
 	}
+	
+
+	public List<Genre> getAllGenre() throws ClassNotFoundException, SQLException{			
+			return gdao.readAllGenres(1);
+	}
+
+	public Genre getGenreByPK(Integer genreId) throws SQLException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+	
+				return gdao.readGenreByID(genreId);
+	}
+	
 	
 
 	
