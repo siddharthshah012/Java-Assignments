@@ -6,10 +6,7 @@
 <%@page import="java.util.List"%>
 <%@page import="com.gcit.lms.service.AdminService"%>
 <%@include file="include.html"%>
-<%AdminService service = new AdminService();
-	List<Book> books = service.getAllBooks();
-	
-%>
+
 <div class="jumbotron">
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Please Insert Author Details</h2>
@@ -17,9 +14,11 @@
 		Enter Author Name to be added: <input type="text" name="authorName"><br />
 		<button type="submit">Add Author!</button>
 		<select name="bookId" multiple="multiple">
-			<%for(Book b: books){ %>
-				<option value="<%=b.getBookId()%>"><%=b.getTitle() %></option>
-			<%} %>
+		<gcit:forEach items="${books }" var="b" >
+			
+				<option value="${b.book.bookId }">${b.book.title }</option>
+			
+			</gcit:forEach>
 		</select>
 		
 	</form>

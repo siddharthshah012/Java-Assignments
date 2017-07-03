@@ -1,5 +1,6 @@
 package com.gcit.lms;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -65,6 +68,15 @@ public class HomeController {
 		return "author";
 	}
 	
+	@RequestMapping(value = "/book", method= RequestMethod.GET)
+	public String book(){
+		return "book";
+	}
+	
+	@RequestMapping(value = "/publisher", method= RequestMethod.GET)
+	public String publisher(){
+		return "publisher";
+	}
 	
 	
 	/*******************
@@ -90,26 +102,430 @@ public class HomeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		return "viewauthors";
 	}
+	
+	
+	
+	@RequestMapping(value = "/pageAuthors", method= RequestMethod.GET)
+	public String pageAuthor(Model model, @RequestParam("pageNo") Integer pageNo){
+		if (pageNo != null ) {
+			try {
+				List<Author> authors = adminService.getAllAuthors(pageNo, null);
+				model.addAttribute("authors", authors);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return "viewauthors";
+	}
+	
+	
 	@RequestMapping(value = "/addAuthor", method= RequestMethod.GET)
-	public String addAuthor(Model model) throws ClassNotFoundException, SQLException{
+	public String addAuthor(Model model, @RequestParam("bookId") Integer bookId,
+			@RequestParam("bookName") String bookName, @RequestParam("authorName") String authorName
+			) throws Exception{
 		
-		List<Author> authors = adminService.getAllAuthors(1,null);
-		List<Genre> genres = adminService.getAllGenre();
-		List<Publisher> publishers = adminService.getAllPublisher(1,null);
-		model.addAttribute("authors", authors);
-		model.addAttribute("genres", genres);
-		model.addAttribute("publishers", publishers);
+		Author author = new Author();
+		author.setAuthorName(authorName);
 		
-		return "addauthor";
+		adminService.saveAuthor(author);
+		return "viewAuthors";
+	}
+	
+	@RequestMapping(value = "/editAuthor", method= RequestMethod.GET)
+	public String editAuthor(Model model, @RequestParam("bookId") Integer bookId, @RequestParam("authorId") Integer authorId,
+			@RequestParam("authorName") String authorName
+			) throws Exception{
+		
+		Author author = new Author();
+		author.setAuthorName(authorName);
+		author.setAuthorId(authorId);
+		
+		adminService.saveAuthor(author);
+		return "viewAuthors";
+	}
+	
+	@RequestMapping(value = "/deleteAuthor", method= RequestMethod.GET)
+	public String deleteAuthor(Model model, @RequestParam("authorId") Integer authorId ) throws ClassNotFoundException, SQLException{
+		
+		String message = "";
+		if (authorId != null ) {
+			
+			Author author =  new Author();
+			author.setAuthorId(authorId);
+			try{
+				adminService.deleteAuthor(author);
+				message = "Author deleted Successfully";
+			} catch (SQLException e) {
+				e.printStackTrace();
+				message = "Author delete failed. Try Again!";
+			}
+		}
+		return "viewauthors";
+	
+	}
+
+	@RequestMapping(value = "/searchAuthor", method = RequestMethod.GET)
+	public String searchAuthor(Model model,
+			@RequestParam("searchString") String searchString,
+			HttpServletResponse response) throws IOException {
+
+		try {
+
+			List<Author> authors = adminService.getAllAuthors(1, searchString);
+			StringBuffer strBuf = new StringBuffer();
+			strBuf.append("<tr><th>Author ID</th><th>Author Name</th><th>Books by Author</th><th>Edit</th><th>Delete</th></tr>");
+			for (Author a : authors) {
+				strBuf.append("<tr><td>+" + authors.indexOf(a) + 1
+						+ "</td><td>" + a.getAuthorName() + "</td><td>");
+				for (Book b : a.getBooks()) {
+					strBuf.append(b.getTitle() + '|');
+				}
+				strBuf.append("</td><td><button type='button' class='btn btn-sm btn-primary'data-toggle='modal' data-target='#editAuthorModal'href='editauthor.jsp?authorId="
+						+ a.getAuthorId() + "'>Edit!</button></td>");
+				strBuf.append("<td><button type='button' class='btn btn-sm btn-danger' onclick='javascript:location.href='deleteAuthor?authorId="
+						+ a.getAuthorId() + "''>Delete!</button></td></tr>");
+			}
+			response.getWriter().write(strBuf.toString());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "viewauthors";
+
+	}
+	
+	/*
+	 * 
+	 * BOOKS
+	 * 
+	 */
+	
+	
+	@RequestMapping(value= "/viewBook", method = RequestMethod.GET)
+	public String viewBooks(Model model) throws SQLException{
+		
+		model.addAttribute("books", adminService.getAllBooks(1, null));
+		List<Book> books = new ArrayList<>();
+		Integer bookCount = adminService.getBooksCount();
+		int pages = 0;
+		if (bookCount % 10 > 0) {
+			pages = bookCount / 10 + 1;
+		} else {
+			pages = bookCount / 10;
+		}
+		model.addAttribute("pages", pages);	
+		
+		return null;
+		
+		
+	}
+	
+	
+	@RequestMapping(value = "/pageBooks", method= RequestMethod.GET)
+	public String pageBook(Model model, @RequestParam("pageNo") Integer pageNo){
+		if (pageNo != null ) {
+			try {
+				List<Book> books = adminService.getAllBooks(pageNo, null);
+				model.addAttribute("books", books);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return "viewbooks";
+	}
+	
+	
+	
+	@RequestMapping(value = "/editBook", method = RequestMethod.GET)
+	public String editBook(Model model,@RequestParam("title") String title,@RequestParam("bookId") Integer bookId) throws Exception{
+		
+		Book book1 = new Book();
+		book1.setTitle(title);
+		book1.setBookId(bookId);
+		
+		try {
+			adminService.saveBook(book1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/viewbooks";
+	}
+	
+	@RequestMapping(value = "/searchBooks", method = RequestMethod.GET)
+	public String searchBook(Model model,
+			@RequestParam("searchString") String searchString,
+			HttpServletResponse response) throws IOException {
+		
+		try {
+			List<Book> books = adminService.getAllBooks(1, searchString);
+			StringBuffer strBuf1 = new StringBuffer();
+			strBuf1.append("<tr><th>Book ID</th><th>Book Title</th><th>Author Name</th>"
+					+ "<th>Genre</th><th> Publisher</th><th>EDIT</th><th>Delete</th></tr>");
+			for(Book b: books){
+				
+				strBuf1.append("<tr><td>"+books.indexOf(b)+1+"</td><td>"+b.getTitle()+"</td><td>");
+				for(Author a: b.getAuthors()){
+					strBuf1.append(a.getAuthorName()+"|");
+					} 
+				strBuf1.append("</td><td>");
+				for(Genre g: b.getGenres()){
+					strBuf1.append(g.getGenreName()+"|");
+				}
+				strBuf1.append("</td><td>"+b.getPublisher().getPublisherName()+"</td><td><button type='button' "
+						+ "class='btn btn-sm btn-primary' data-toggle='modal' data-target='#editBookModal' "
+						+ "href='editbook?bookId="+b.getBookId()+"'>Edit!</button></td>	");
+				strBuf1.append("<td><button type='button' class='btn btn-sm btn-danger' "
+						+ "onclick='javascript:location.href='deleteBook?bookId="+b.getBookId()+"''>Delete!</button></td></tr>");
+			}
+			
+			response.getWriter().write(strBuf1.toString());
+			//isAjax = Boolean.TRUE;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "viewbooks";
+	}
+	
+
+	@RequestMapping(value = "/deleteBook", method= RequestMethod.GET)
+	public String deleteBook(Model model, @RequestParam("bookId") Integer bookId){
+		
+		Book book = new Book();
+		String message= "";
+		if (bookId != null ) {
+		book.setBookId(bookId);
+			try {
+				adminService.deleteBook(book);
+				message = "book deleted Successfully";
+			} catch (SQLException e) {
+				e.printStackTrace();
+				message = "Book delete failed. Try Again!";
+			}
+		}
+		model.addAttribute("message",message);
+		
+		return "viewbooks";
+	}
+	
+
+	@RequestMapping(value = "/addBook", method= RequestMethod.GET)
+	public String addBook(Model model, @RequestParam("bookId") Integer bookId,
+			@RequestParam("bookName") String bookName,
+			@RequestParam("auhtorId") String authors,
+			@RequestParam("genres") String genres,
+			@RequestParam("publisherId") Publisher publisher) throws ClassNotFoundException, SQLException{
+		
+		Book book = new Book();
+	
+		String title, publisherData = null;
+		book.setTitle("bookName");
+		
+		//publisher = publisher.split(" ");
+	
+		AdminService service = new AdminService();
+		List<Author> authorList = new ArrayList<>();
+		List<Genre> genreList = new ArrayList<>();
+		Publisher publisherSelected;
+		
+		try {
+			for(Author author: authorList) {
+				String[] temp = author.split(" ");
+				Author a = adminService.getAuthorByPK(Integer.parseInt(temp[0]));
+				authorList.add(a);
+			}
+			for(String genre: genreList) {
+				String[] temp = genre.split(" ");
+				Genre g = adminService.getGenreByPK(Integer.parseInt(temp[0]));
+				genreList.add(g);
+			}
+			book.setAuthors(authorList);
+			book.setGenres(genreList);
+			book.setTitle(title);
+			if(!publisherData.isEmpty()) {
+				publisherSelected = service.getPublisherByPK(publisher.getPublisherId());
+				book.setPublisher(publisherSelected);
+			}else
+				book.setPublisher(null);
+			
+			try {
+				service.saveBook(book);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (SQLException e) {
+			//System.out.println("Adding book failed.");
+			e.printStackTrace();
+		}
+		
+		return "viewBooks";
 	}
 	
 	
 	
 	
+	
+	
+	/*
+	 * 
+	 * PUBLISHERS
+	 * 
+	 * Changes to be made call fucntion for pages
+	 */
+	
+	@RequestMapping(value= "/viewpublishers", method = RequestMethod.GET)
+	public String viewPublishers(Model model) throws SQLException, ClassNotFoundException{
+		
+		model.addAttribute("publishers", adminService.getAllPublisher(1,null));
+		List<Publisher> publishers = new ArrayList<>();
+		Integer publishercount = adminService.getPublisherCount();
+		int pages = 0;
+		if (publishercount % 10 > 0) {
+			pages = publishercount / 10 + 1;
+		} else {
+			pages = publishercount / 10;
+		}
+		model.addAttribute("pages", pages);	
+		
+		return "viewpublishers";
+	}
+	
+	@RequestMapping(value = "/pagePublishers", method= RequestMethod.GET)
+	public String pagePublisher(Model model, @RequestParam("pageNo") Integer pageNo) throws ClassNotFoundException{
+		if (pageNo != null ) {
+			try {
+				List<Publisher> publishers = adminService.getAllPublisher(1, null);
+				model.addAttribute("publishers", publishers);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return "viewbooks";
+	}
+	
+	
+	@RequestMapping(value = "/editPublisher", method = RequestMethod.GET)
+	public String editPublisher(Model model,@RequestParam("publisherName") String publisherName,
+			@RequestParam("publisherAddress") String publisherAddress,
+			@RequestParam("publisherPhones") String publisherPhone,
+			@RequestParam("publisherId") Integer publisherId) throws Exception{
+		
+		Publisher publisher = new Publisher();
+		publisher.setPublisherId(publisherId);
+		publisher.setPublisherName(publisherName);
+		publisher.setPublisherAddress(publisherAddress);
+		publisher.setPublisherPhones(publisherPhone);
+		
+		try {
+			adminService.savePublisher(publisher);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/viewbooks";
+	}
+	
+	
+	@RequestMapping(value = "/addPublisher", method = RequestMethod.GET)
+	public String addPublisher(Model model,@RequestParam("publisherName") String publisherName,
+			@RequestParam("publisherAddress") String publisherAddress,
+			@RequestParam("publisherPhones") String publisherPhone
+			) throws Exception{
+		
+		Publisher publisher = new Publisher();
+		//publisher.setPublisherId(publisherId);
+		publisher.setPublisherName(publisherName);
+		publisher.setPublisherAddress(publisherAddress);
+		publisher.setPublisherPhones(publisherPhone);
+		
+		try {
+			adminService.savePublisher(publisher);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/viewbooks";
+	}
+	
+	
+	@RequestMapping(value="/deletePublisher",method = RequestMethod.POST)
+	public String deletePublisher(Model model, @RequestParam("publisherId") Integer publisherId, HttpServletResponse response) throws IOException{
+		
+		Publisher publisher = new Publisher();
+		List<Publisher> publishers = null;
+		String message= "";
+		if (publisherId != null) {
+			publisher.setPublisherId(publisherId);
+			
+			try {
+				adminService.deletePublisher(publisher);
+				publishers = adminService.getAllPublisher(1, null);
+				message = "Publisher deleted Successfully";
+				
+				StringBuffer strBuf1 = new StringBuffer();
+				
+				strBuf1.append("<tr><th>ID</th><th>Publisher Name</th>"
+						+ "<th>Publisher Address</th><th>Publisher Phone</th>"
+						+ "<th>EDIT</th><th>DELETE</th></tr>");
+				for (Publisher p: publishers){
+					strBuf1.append("<tr><td>"+(publishers.indexOf(p)+1)+"</td><td>"+p.getPublisherName()+"</td><td>"+p.getPublisherAddress()+""
+							+ "</td><td>"+p.getPublisherPhones()+"</td>");
+					strBuf1.append("<td><button type='button' class='btn btn-sm btn-success' data-toggle='modal' "
+							+ "data-target='#editPubModal' href='editpublishers.jsp?pubId="+p.getPublisherId()+"'>EDIT!</button></td>");
+					strBuf1.append("<td><button type='button' class='btn btn-sm btn-danger' id='publisherId' onclick='deletePub()' value="+p.getPublisherId()+">Delete!</button></td>");
+					strBuf1.append("</tr>");
+				}
+				response.getWriter().write(strBuf1.toString());
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				message = "publisher delete failed. Try Again!";
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		model.addAttribute("message", message);
+		return "viewpublishers";
+	}
+	
+	@RequestMapping(value="/searchPublisher",method = RequestMethod.POST)
+	public String searchPublisher(Model model, @RequestParam("publisherId") Integer publisherId, 
+			@RequestParam("searchString") String searchString,
+			HttpServletResponse response) throws IOException{
+	
+
+		try {
+			List<Publisher> publishersSearch = adminService.getAllPublisher(1, searchString);
+			StringBuffer strBuf2 = new StringBuffer();
+			
+			strBuf2.append("<tr><th>ID</th><th>Publisher Name</th>"
+					+ "<th>Publisher Address</th><th>Publisher Phone</th>"
+					+ "<th>EDIT</th><th>DELETE</th></tr>");
+			for (Publisher p: publishersSearch){
+				strBuf2.append("<tr><td>"+(publishersSearch.indexOf(p)+1)+"</td><td>"+p.getPublisherName()+"</td><td>"+p.getPublisherAddress()+""
+						+ "</td><td>"+p.getPublisherPhones()+"</td>");
+				strBuf2.append("<td><button type='button' class='btn btn-sm btn-success' data-toggle='modal' "
+						+ "data-target='#editPubModal' href='editpublishers.jsp?pubId="+p.getPublisherId()+"'>EDIT!</button></td>");
+				strBuf2.append("<td><button type='button' class='btn btn-sm btn-danger' id='publisherId' onclick='deletePub()' value="+p.getPublisherId()+">Delete!</button></td>");
+				strBuf2.append("</tr>");
+			}
+			response.getWriter().write(strBuf2.toString());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "viewpublishers";
+	}
+
 	
 	/****************************Borrower
 	 * @throws Exception **********************************************/
