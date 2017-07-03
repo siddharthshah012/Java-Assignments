@@ -6,12 +6,43 @@
 <% 
 AdminService adminService = new AdminService();
 List<Library> library = adminService.getAllBranches(1);
+Integer branchcount = adminService.getBranchCount();
+
+int pages = 0;
+if (branchcount % 10 > 0) {
+	pages = branchcount / 10 + 1;
+} else {
+	pages = branchcount / 10;
+}
+if (request.getAttribute("branches") != null) {
+	library = (List<Library>) (request.getAttribute("branches"));
+} else {
+	library = adminService.getAllBranches(1);
+}
+
 %>
 <div class="jumbotron">
 
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Hello Admin! Please pick an action!</h2>	
-
+	
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li><a href="#" aria-label="Previous"> <span
+					aria-hidden="true">&laquo;</span>
+			</a></li>
+			<%
+				for (int i = 1; i <= pages; i++) {
+			%>
+			<li><a href="pageBranch?pageNo=<%=i%>"><%=i%></a></li>
+			<%
+				}
+			%>
+			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+			</a></li>
+		</ul>
+	</nav>
+	
 	<table class="table">
 		<tr>
 			<th>ID</th>

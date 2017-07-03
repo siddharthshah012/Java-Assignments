@@ -1,0 +1,38 @@
+<%@page import="com.gcit.lms.entity.Publisher"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@include file="include.html" %>
+
+
+
+<% 
+AdminService adminService = new AdminService();
+List<Publisher> publishers = adminService.getAllPublisher(); %>
+<div class="jumbotron">
+
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Hello Admin! Please pick an action!</h2>	
+	
+	
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>Publisher Name</th>
+			<th>Publisher Address</th>
+			<th>Publisher Phone</th>
+			<th>EDIT</th>
+			<th>DELETE</th>
+		</tr>
+		<%for(Publisher p: publishers){ %>
+		<tr>
+			<td><%=publishers.indexOf(p)+1 %></td>
+			<td><%=p.getPublisherName()%></td>
+			<td><%=p.getPublisherAddress() %></td>
+			<td><%=p.getPublisherPhones() %></td>
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='editPublisher?pubId=<%=p.getPublisherId()%>'">EDIT!</button></td>			
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deletePublisher?pubId=<%=p.getPublisherId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+
+</div>

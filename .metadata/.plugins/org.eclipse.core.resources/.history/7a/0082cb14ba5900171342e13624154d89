@@ -1,0 +1,86 @@
+package com.gcit.lms.dao;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.gcit.lms.entity.Borrower;
+
+public class BorrowerDAO extends BaseDAO{
+
+	public BorrowerDAO(Connection conn) {
+		super(conn);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public List<?> extractData(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void addBorrower(Borrower borrower) throws SQLException {
+		save("Insert into tbl_borrower(name,address,phone) values (?,?,?)",
+				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone()});
+	}
+	
+	public Integer addBorrowerWithId(Borrower borrower) throws SQLException {
+		return saveWithID("Insert into tbl_borrower(name,address,phone) values (?,?,?)",
+				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone()});
+	}
+	
+	public void updateBorrower(Borrower borrower) throws SQLException {
+		save("Update tbl_borrower set name= ?, address=?, phone=? where cardNo = ?",
+				new Object[] { borrower.getName(),borrower.getAddress(),borrower.getPhone(), borrower.getCardNo() });
+	}
+	
+	public void deleteBorrower(Borrower borrower) throws SQLException {
+		save("delete from tbl_borrower where cardNo = ?", new Object[] {borrower.getCardNo()});
+
+	}
+
+	public List<Borrower> readAllBorrowers(Integer pageNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int CheckCard(Integer cardNo) {
+		// TODO Auto-generated method stub
+		try {
+			return getCount("select count(*) from tbl_borrower where cardNo = ?",new Object[] {cardNo});
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//return 0;
+		return 0;
+	}
+	
+	public Integer getCount(String string, Object object) throws ClassNotFoundException, SQLException{
+		return getCount(string,null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Borrower readBorrowerByID(Integer cardNo) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		List<Borrower> borrower = (List<Borrower>) readAll("select cardno from tbl_borrower where cardNo = ?", new Object[] {cardNo});
+		if(borrower!=null && borrower.size() >0){
+			System.out.println("in DAO"+borrower.get(0));
+			return (Integer.parseInt(borrower.get(0)));
+		}
+		else{
+			return null;
+			}
+	}
+
+}

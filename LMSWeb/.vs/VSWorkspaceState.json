@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\com",
+    "\\src\\com\\gcit",
+    "\\src\\com\\gcit\\lms",
+    "\\src\\com\\gcit\\lms\\dao",
+    "\\src\\com\\gcit\\lms\\service",
+    "\\src\\com\\gcit\\lms\\web",
+    "\\WebContent"
+  ],
+  "SelectedNode": "\\WebContent\\checkout.jsp",
+  "PreviewInSolutionExplorer": false
+}

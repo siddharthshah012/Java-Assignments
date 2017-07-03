@@ -1,0 +1,13 @@
+<%@ include file="include.html"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.gcit.lms.entity.Library" %>
+<%@ page import="com.gcit.lms.entity.Book" %>
+<%@ page import="com.gcit.lms.service.AdminService" %>
+
+<%
+	int cardNum=(Integer)request.getAttribute("cardNo");
+	
+	AdminService adminService = new AdminService();
+	List<Library> branch = new ArrayList<Library>();
+%>

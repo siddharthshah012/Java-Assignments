@@ -1,0 +1,18 @@
+package com.gcit.lms.entity;
+
+import java.sql.Timestamp;
+
+public class BookLoans {
+	
+	
+	private Book books;
+	private LibraryBranch branch;
+	private Borrower borrower;
+	private Timestamp dateOut;
+	private Timestamp dueDate;
+	private Timestamp dateIn;
+	
+	
+	
+
+}

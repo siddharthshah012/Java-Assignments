@@ -1,0 +1,146 @@
+package com.gcit.lms.service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.BookLoansDAO;
+import com.gcit.lms.dao.BorrowerDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
+import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.BookLoans;
+import com.gcit.lms.entity.Library;
+
+public class BorrowerService {
+	
+	ConnectionUtil cUtil = new ConnectionUtil();
+	
+	public int checkCardNo(Integer cardNo) throws SQLException{
+		
+		System.out.println("in service card" +cardNo);
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		int flag = 0;
+		
+		try{
+			BorrowerDAO brdao = new BorrowerDAO(conn);
+			//System.out.println("condition" + brdao.readBorrowerByID(cardNo));
+			
+			if(brdao.CheckCard(cardNo) != 0){
+				flag = 1;
+				return flag;
+			}
+		}catch (Exception e){
+			System.out.println("in cathc");
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+		System.out.println("in service"+ flag);
+		return flag;
+		
+	}
+	
+	public List<Library> getAllBranches() throws SQLException, ClassNotFoundException{
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			return lbdao.readAllBranches();
+		} finally{
+			if(conn!=null){
+				conn.close();
+			}
+		}
+		//return null;
+		
+	}
+	
+	public List<Book> readAllBookswithBranch(Integer branchId)
+			throws SQLException, ClassNotFoundException {
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			// LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			BookDAO bdao = new BookDAO(conn);
+			System.out.println("branchId" +branchId);
+			return bdao.readAllBookswithBranch(branchId);
+
+		} catch (SQLException e) {
+			System.out.println("Get books by name failed!");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return null;
+
+	}
+	
+	public Integer checkBookOut(BookLoans book)
+			throws ClassNotFoundException, SQLException {
+
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			// LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			BookLoansDAO bldao = new BookLoansDAO(conn);
+			//System.out.println("bookid "+bookId+"branchid"+branchId+"cardno"+cardNo);
+			
+			return bldao.checkOutbook(book);
+
+		} catch (SQLException e) {
+			System.out.println("Get books by name failed!");
+		} finally {
+			conn.commit();
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return null;
+	}
+	
+	public List<Book> readBooksforCard(Integer cardNo)
+			throws SQLException, ClassNotFoundException {
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			// LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			BookDAO bdao = new BookDAO(conn);
+			System.out.println("branchId" +cardNo);
+			return bdao.readBooksforCardNo(cardNo);
+
+		} catch (SQLException e) {
+			System.out.println("Get books by name failed!");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return null;
+	}
+	
+	public List<?> readBooksforCard(BookLoans bookloans)
+			throws SQLException, ClassNotFoundException {
+		Connection conn = null;
+		try {
+			conn = cUtil.getConnection();
+			// LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			BookLoansDAO bldao = new BookLoansDAO(conn);
+			//System.out.println("branchId" +cardNo);
+			return bldao.readBooksforCardNo(bookloans);
+
+		} catch (SQLException e) {
+			System.out.println("Get books by name failed!");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return null;
+
+	}
+	
+
+}

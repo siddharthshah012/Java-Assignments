@@ -1,0 +1,38 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@page import="java.util.List"%>
+<%@include file="include.html" %>
+<%@page import="com.gcit.lms.service.BorrowerService"%>
+<%@page import="com.gcit.lms.entity.BookLoans" %>
+
+<%Integer cardNo = Integer.parseInt(request.getParameter("cardNo")); %>
+<%List <BookLoans> bookLoansList = (List<BookLoans>)request.getAttribute("bookLoansList"); %>
+
+<div>
+	<form>
+		List of all the books loaned by card Number:
+		<table class="table">
+			<tr>
+				<th>ID</th>
+				<th>Book Title</th>
+				<th>Branch Name</th>
+				<th>Branch Address</th>
+				<th>SELECT!!!!</th>
+			</tr>
+			<%for(BookLoans bl: bookLoansList){ %>
+				<tr>
+					<td><%= bl.getBooks().getTitle() %></td>
+					<td><%=bl.getBranch().getBranchName() %></td>
+					<td><%=bl.getBranch().getBranchAddress() %></td>
+					<td>
+						<form action="returnBook"  method="get">
+							<input type="hidden" name="dateout"" value=>
+							<input type="submit"  class="btn btn-sm btn-primary">SELECT!</form>
+					</td>				
+				</tr>
+			
+			<%} %>
+			
+		</table>
+	</form>
+</div>

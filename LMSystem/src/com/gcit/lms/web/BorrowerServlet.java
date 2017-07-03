@@ -67,7 +67,7 @@ public class BorrowerServlet extends HttpServlet {
 		
 		String message ="";
 		Integer bookList = 0;
-		BookLoans bl = new BookLoans();
+		//BookLoans bl = new BookLoans();
 		int cardNo = Integer.parseInt(request.getParameter("cardNo"));
 		int branchId = Integer.parseInt(request.getParameter("branchId"));
 		int bookId = Integer.parseInt(request.getParameter("bookId"));

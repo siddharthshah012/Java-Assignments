@@ -1,0 +1,84 @@
+<%@page import="com.gcit.lms.entity.Library"%>
+<%@page import="com.gcit.lms.service.LibrarianService"%>
+<%@include file="include.html"%>
+<%@page import="java.util.*"%>
+<%@page import="java.util.List"%>
+
+
+
+<%
+	LibrarianService libService = new LibrarianService();
+	List<Library> branches = new ArrayList<Library>();
+	Integer brCount = libService.getBranchesCount();
+	int pages = 0;
+	if(brCount%10> 0){
+		pages = brCount/10+1;
+	}else{
+		pages = brCount/10;
+	}
+	return pages;
+	if(request.getAttribute("branches")!=null){
+		branches = (List<Library>)(request.getAttribute("branches"));
+		}else{
+			branches = libService.getAllBranches(1);	
+		}
+%>
+
+<div class="jumbotron">
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Below are the list of Branches in LMS</h2>
+	${message}
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li><a href="#" aria-label="Previous"> <span
+					aria-hidden="true">&laquo;</span>
+			</a></li>
+			<%for(int i=1; i<=pages; i++){ %>
+				<li><a href="pageBranch?pageNo=<%=i%>"><%=i%></a></li>
+			<%} %>
+			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+			</a></li>
+		</ul>
+	</nav>
+	<table class="table">
+		<tr>
+			<th>Branch ID</th>
+			<th>Branch Name</th>
+			<th>Branch Address</th>
+			<th>Edit</th>
+			
+		</tr>
+		<%
+			for (Library br : branches) {
+		%>
+		<tr>
+			<td><%=branches.indexOf(br) + 1%> </td>
+			
+			<td><%=br.getBranchName()%></td>
+			<td><%=br.getBranchAddress()%></td>
+			
+			
+			<td><button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editBranchModal"
+					href='editbranch1.jsp?branchId=<%=br.getBranchId()%>'">Edit!</button></td>
+		</tr>
+		<%
+			}
+		%>
+	</table>
+</div>
+<div class="modal fade bs-example-modal-lg" tabindex="-1"
+	id="editBranchModal" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content"></div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		// codes works on all bootstrap modal windows in application
+		$('.modal').on('hidden.bs.modal', function(e) {
+			$(this).removeData();
+		});
+	});
+</script>
+

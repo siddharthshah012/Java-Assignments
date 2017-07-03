@@ -1,0 +1,45 @@
+package com.gcit.lms;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.gcit.lms.service.AdminService;
+
+
+@Configuration
+public class LMSConfig {
+	
+	public String driver = "com.mysql.jdbc.Driver";
+	public String url = "jdbc:mysql://localhost/library";
+	public String username = "root";
+	public String password = "siddharth";
+	
+	@Bean
+	public BasicDataSource datasource(){
+		
+		BasicDataSource datasource = new BasicDataSource();
+		
+		datasource.setDriverClassName(driver);
+		datasource.setUrl(url);
+		datasource.setUsername(username);
+		datasource.setPassword(password);
+		
+		return datasource;
+	}
+	
+	public JdbcTemplate template(){
+		
+		return new JdbcTemplate(datasource());
+	}
+	
+	@Bean
+	public AdminService adminService(){
+	
+		return new AdminService();	
+	}
+	
+	
+
+}

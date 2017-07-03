@@ -1,0 +1,36 @@
+package com.gcit.lms.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.BookLoansDAO;
+import com.gcit.lms.dao.BorrowerDAO;
+import com.gcit.lms.dao.GenreDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
+import com.gcit.lms.dao.PublisherDAO;
+
+public class LibrarianService {
+
+	@Autowired
+	AuthorDAO adao;
+	
+	@Autowired
+	BookDAO bdao;
+	
+	@Autowired
+	PublisherDAO pdao;
+	
+	@Autowired
+	BorrowerDAO bodao;
+	
+	@Autowired
+	LibraryBranchDAO lbdao;
+	
+	@Autowired
+	GenreDAO gdao;
+	
+	@Autowired
+	BookLoansDAO bldao;
+	
+}

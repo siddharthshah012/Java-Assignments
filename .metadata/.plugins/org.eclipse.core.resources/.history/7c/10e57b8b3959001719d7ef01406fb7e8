@@ -1,0 +1,64 @@
+package com.gcit.lms.dao;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.gcit.lms.entity.Genre;
+
+public class GenreDAO extends BaseDAO{
+
+	public GenreDAO(Connection conn) {
+		super(conn);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void addGenre(Genre genre) throws ClassNotFoundException, SQLException {
+		save("insert into tbl_genre (genre_name) values (?)", new Object[] { genre.getGenreName() });
+	}
+	
+	public void updateGenre(Genre genre) throws SQLException {
+		save("Update tbl_genre set genreName= ? where genreId = ?",
+				new Object[] { genre.getGenreName(), genre.getGenreId() });
+	}
+
+	public void deleteGenre(Genre genre) throws SQLException {
+		save("delete from tbl_genre where genreId = ?", new Object[] {genre.getGenreId()});
+
+	}
+	
+	
+	public List<Genre> readAllGenres(Integer pageNo) throws ClassNotFoundException, SQLException{
+		setPageNo(pageNo);
+		return (List<Genre>) read("select * from tbl_genre", null);
+	}
+	
+	public List<Genre> readAllGenres() throws ClassNotFoundException, SQLException{
+		return (List<Genre>) readAll("select * from tbl_genre", null);
+	}
+	
+	public Genre readGenreByID(Integer genreID) throws ClassNotFoundException, SQLException {
+		List<Genre> pub = (List<Genre>) read("select * from tbl_genre where genre_id = ?", new Object[] { genreID });
+		if (pub != null && !pub.isEmpty()) {
+			return pub.get(0);
+		}
+		return null;
+	}
+	
+	
+	
+
+	@Override
+	public List<?> extractData(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

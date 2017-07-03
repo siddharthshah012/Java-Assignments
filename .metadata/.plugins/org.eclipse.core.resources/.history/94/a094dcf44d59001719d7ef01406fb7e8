@@ -1,0 +1,23 @@
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@include file="include.html" %>
+<%@page import="java.util.*" %>
+<%@page import="com.gcit.lms.service.AdminService" %>
+
+<%AdminService adminService = new AdminService();
+List<Author> authors = adminService.getAllAuthors();
+%>
+<div>
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Please Insert Author Details</h2>
+	<form action="addBook" method="post">
+		<select> 
+		<%for (Author a: authors) {%>
+			<option name="authorName"value="<%=a.getAuthorId() %>"><%=a.getAuthorName()%></option>
+			
+			<% }%>
+			</select>
+		Enter Book Name to be added: <input type="text" name="bookName"><br />
+		<button type="submit">Add Book!</button>
+		
+	</form>
+</div>

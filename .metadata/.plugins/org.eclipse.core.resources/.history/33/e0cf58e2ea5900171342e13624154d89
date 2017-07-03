@@ -1,0 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@include @file="include.html" %>
+
+<% 
+Integer branchId = Integer.parseInt(request.getParameter("branchId"));
+Integer bookId = Integer.parseInt(request.getParameter("bookId"));
+%>
+

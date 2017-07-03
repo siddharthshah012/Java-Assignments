@@ -1,0 +1,41 @@
+<%@page import="com.gcit.lms.service.BorrowerService"%>
+<%@ include file="include.html"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.gcit.lms.entity.Library" %>
+<%@ page import="com.gcit.lms.entity.Book" %>
+<%@ page import="com.gcit.lms.service.AdminService" %>
+
+<%
+	int cardNum=(Integer)request.getAttribute("cardNo");
+	
+	BorrowerService bservice = new BorrowerService();
+	List<Library> branches = bservice.getAllBranches();
+	//List<Library> branch = new ArrayList<Library>();
+%>
+
+
+<div>
+	
+	<table class="table">
+		<tr>
+			<th>Branch ID</th>
+			<th>Branch Name</th>
+			<th>Branch Address</th>
+			<th>SELECT</th>
+		</tr>
+		<%for(Library l: branches){ %>
+		<tr>
+			<td><%=branches.indexOf(l)+1 %></td>
+			<td><%=l.getBranchName() %></td>	
+			<td><%=l.getBranchAddress() %></td>
+			<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
+			data-target="#">SELECT!</button></td>
+				
+		</tr>
+		<%} %>
+	</table>
+	
+</div>
+
+

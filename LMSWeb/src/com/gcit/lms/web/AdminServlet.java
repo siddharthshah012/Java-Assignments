@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.Borrower;
 import com.gcit.lms.entity.Genre;
 import com.gcit.lms.entity.Publisher;
 import com.gcit.lms.service.AdminService;
@@ -21,7 +22,8 @@ import com.gcit.lms.service.AdminService;
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/deleteAuthor","/editAuthor","/addBook","/deleteBook" })
+@WebServlet({ "/addAuthor", "/deleteAuthor","/editAuthor","/addBook"
+	,"/deleteBook","/addBorrower","/deleteBorrower","/searchAuthors","/deleteAuthor" })
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -45,13 +47,18 @@ public class AdminServlet extends HttpServlet {
 		
 		switch(reqUrl){
 		
-		case"/deleteAuthor":deleteAuthor(request);
+		case"/deleteAuthor":deleteAuthor(request,response);
 							forwardPath="/viewauthors.jsp";
 							message ="Deleetd Author successfully";
 							break;
-		case"/deleteBook":	deleteBook(request);
+		case"/deleteBook":	deleteBook(request,response);
 							forwardPath="/viewBooks.jsp";
 							message ="Deleted Book successfully";
+							break;
+							
+		case"/deleteBorrower":deleteBorrower(request, response);
+							forwardPath="/viewBorrowers.jsp";
+							message ="Deleted Borowwer successfully";
 							break;
 		}
 		
@@ -59,6 +66,12 @@ public class AdminServlet extends HttpServlet {
 		request.setAttribute("message", message);
 		RequestDispatcher rd = request.getRequestDispatcher(forwardPath);
 		rd.forward(request, response);
+	}
+
+	private void deleteBorrower(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -78,10 +91,14 @@ public class AdminServlet extends HttpServlet {
 		case "/editAuthor" :editAuthor(request);
 							forwardPath="/viewauthors.jsp";
 							break;
-		case"/addBook": System.out.println("here");
-						addBook(request);
-						forwardPath="/viewBooks.jsp";
-						break;
+		case"/addBook": 	System.out.println("here");
+							addBook(request);
+							forwardPath="/viewBooks.jsp";
+							break;
+		case"/addBorrower": System.out.println("here");
+							addBorrower(request);
+							forwardPath="/borrowadmin.jsp";
+							break;
 							
 		/*default:forwardPath="/viewAuthors.jsp";
 				break;*/
@@ -189,28 +206,62 @@ public class AdminServlet extends HttpServlet {
 		
 	}
 	
-	private void deleteAuthor(HttpServletRequest request){
+	private void deleteAuthor(HttpServletRequest request,HttpServletResponse response) {
 		
 		Author author = new Author();
+		Integer authorId;
 		String message = "";
+		StringBuilder str = new StringBuilder();
 		if (request.getParameter("authorId") != null && !request.getParameter("authorId").isEmpty()) {
-			author.setAuthorId(Integer.parseInt(request.getParameter("authorId")));
-
+			 author.setAuthorId(Integer.parseInt(request.getParameter("authorId")));
 			try {
 				adminService.deleteAuthor(author);
-				message = "Author deleted Successfully";
+				List<Author> authors = null;
+				try {
+					authors = adminService.getAllAuthors(null);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				str.append("<tr><th>Author Name</th><th>Book Title</th><th>Edit</th><th>Delete</th></tr>");
+				for (Author a : authors) {
+					str.append("<tr><td>" + a.getAuthorName()
+							+ "</td><td>Book Name</td>");
+					str.append("<td><button type='button' onclick='javascript:location.href='editAuthor?authorId="
+							+ a.getAuthorId()
+							+ "''>EDIT</button><td>"
+							+ "<button type='button' onclick='javascript:location.href='deleteAuthor?authorId="
+							+ a.getAuthorId() + "''>DELETE</button><td>");
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				message = "Author delete failed. Try Again!";
 			}
+				
+				request.setAttribute("message", "Author Deleted Sucessfully");
+				
+				RequestDispatcher rd = request.getRequestDispatcher("viewauthors.jsp");
+				message = "Author deleted Successfully";
+				
+				try {
+					rd.forward(request, response);
+				} catch (ServletException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
 		}
 		
 	}
-	private void deleteBook(HttpServletRequest request){
+	private void deleteBook(HttpServletRequest request, HttpServletResponse response){
 		
 		Book book = new Book();
 		String message = "";
-		if (request.getParameter("bookId") != null && !request.getParameter("bookId").isEmpty()) {
+		//if (request.getParameter("bookId") != null && !request.getParameter("bookId").isEmpty()) {
 			book.setBookId(Integer.parseInt(request.getParameter("bookId")));
 			try {
 				adminService.deleteBook(book);
@@ -219,7 +270,29 @@ public class AdminServlet extends HttpServlet {
 				e.printStackTrace();
 				message = "Book delete failed. Try Again!";
 			}
-	}
+		//}
 	}
 
+	
+	
+	private void addBorrower(HttpServletRequest request){
+		
+		Borrower borrwer = new Borrower();
+		borrwer.setName(request.getParameter("name"));
+		borrwer.setAddress(request.getParameter("address"));
+		borrwer.setPhone(request.getParameter("phone"));
+
+		try {
+			try {
+				adminService.saveBorrower(borrwer);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

@@ -641,17 +641,17 @@ public class AdminService {
 		conn = cUtil.getConnection();
 		Integer count = null;
 		try{
-			LibraryBranchDAO adao = new LibraryBranchDAO(conn);
-			count = adao.getBranchesCount();
+			LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+			count = lbdao.getBranchesCount();
 			conn.commit();
 		}catch (Exception e){
 			conn.rollback();
 		}finally{
 			conn.close();
 		}
-
 		return count;
 	}
+	
 	
 	
 	public Integer getBorrowerCount() throws ClassNotFoundException, SQLException{

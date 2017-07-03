@@ -1,0 +1,125 @@
+<%@include file="include.html"%>
+<%@page import="com.gcit.lms.entity.Genre"%>
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@page import="com.gcit.lms.entity.Book"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+
+    
+<%
+	AdminService adminService = new AdminService();
+	List<Book> books = new ArrayList<>();
+	Integer bookCount = adminService.getBooksCount();
+	int pages = 0;
+	if (bookCount % 10 > 0) {
+		pages = bookCount / 10 + 1;
+	} else {
+		pages = bookCount / 10;
+	}
+	if (request.getAttribute("books") != null) {
+		books = (List<Book>)(request.getAttribute("books"));
+	} else {
+		books = adminService.getAllBooks(1, null);
+	}
+%>    
+<script>
+
+function searchBooks(){
+	$.ajax({
+		url: "searchBooks",
+		data:{
+			searchString: $('#searchStringB').val()
+		}
+	}).done(function (data){
+		$('#booksTable').html(data)
+	})
+}
+
+</script>     
+
+<div class ="jumbotron">
+	
+	<a href="welcome.jsp">Welcome page</a></br>
+	<a href="book.jsp">GO back</a></br>
+	${message} 
+	
+	<div>
+		<h5>SEARCH BOOKS</h5>
+			<input type="text" name="searchStringB"  id="searchStringB"  placeholder="Book Name" aria-describedby="basic-addon1" oninput="searchBooks()">
+	</div>
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li><a href="#" aria-label="Previous"> <span
+					aria-hidden="true">&laquo;</span>
+			</a></li>
+			<%
+				for (int i = 1; i <= pages; i++) {
+			%>
+			<li><a href="pageBooks?pageNo=<%=i%>"><%=i%></a></li>
+			<%
+				}
+			%>
+			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+			</a></li>
+		</ul>
+	</nav>
+	
+	
+	<table class="table table-striped" id="booksTable">
+		<tr>
+			<th>Book ID</th>
+			<th>Book Title</th>
+			<th>Author Name</th>
+			<th>Genre</th>
+			<th> Publisher</th>
+			<th>EDIT</th>
+			<th>Delete</th>
+		</tr>
+		<%for(Book b: books){ %>
+		<tr>
+			<td><%=books.indexOf(b)+1 %></td>
+			<td><%=b.getTitle()%></td>
+			<td>
+			<% 
+			for(Author a: b.getAuthors()){
+				out.println(a.getAuthorName()+"|");
+			} 
+			%>
+			</td>
+			<td>
+				<% 
+					for(Genre g: b.getGenres()){
+						out.println(g.getGenreName()+"|");
+					}
+				%>
+			</td>
+			
+			<td></td>
+			<td><button type="button" class="btn btn-sm btn-primary"
+					data-toggle="modal" data-target="#editBookModal"
+					href="editbook.jsp?bookId=<%=b.getBookId()%>">Edit!</button></td>		
+			<td><button type="button" class="btn btn-sm btn-danger" 
+			onclick="javascript:location.href='deleteBook?bookId=<%=b.getBookId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+</div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1"
+	id="editBookModal" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content"></div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		// codes works on all bootstrap modal windows in application
+		$('.modal').on('hidden.bs.modal', function(e) {
+			$(this).removeData();
+		});
+	});
+</script>

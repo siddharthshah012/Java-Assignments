@@ -1,0 +1,105 @@
+package com.gcit.lms.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.gcit.lms.entity.Book;
+import com.gcit.lms.entity.BookLoans;
+import com.gcit.lms.entity.Borrower;
+import com.gcit.lms.entity.Library;
+import com.gcit.lms.service.BorrowerService;
+
+/**
+ * Servlet implementation class BorrowerServlet
+ */
+@WebServlet({"/BorrowerServlet","/checkCardNo"})
+public class BorrowerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public BorrowerServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+		String message = "";
+		String reqUrl = request.getRequestURI().substring(
+				request.getContextPath().length(),
+				request.getRequestURI().length());
+		switch (reqUrl) {
+		case "/checkCardNo": checkout(request, response);
+						message="passed";
+						break;
+						
+		/*case "/loanbooks": returnLoanBook(request,response);
+							message="Successfull";
+							break;*/
+		}
+		request.setAttribute("message", message);
+		RequestDispatcher rd = request.getRequestDispatcher("/showallbranches.jsp");
+		rd.forward(request, response);	
+		
+		
+	}
+
+	private void checkout(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+		String message ="";
+		Integer bookList = 0;
+		BookLoans bl = new BookLoans();
+		int cardNo = Integer.parseInt(request.getParameter("cardNo"));
+		int branchId = Integer.parseInt(request.getParameter("branchId"));
+		int bookId = Integer.parseInt(request.getParameter("bookId"));
+		BorrowerService bservice = new BorrowerService();
+		if (cardNo > 0) {
+			BookLoans bookLoans=new BookLoans();
+			
+			Book books = new Book();
+			books.setBookId(bookId);
+			bookLoans.setBooks(books);
+			
+			Borrower borrower = new Borrower();
+			borrower.setCardNo(cardNo);
+			bookLoans.setBorrower(borrower);
+			
+			Library lib = new Library();
+			lib.setBranchId(branchId);
+			bookLoans.setBranch(lib);
+			
+			try {
+				bookList = (Integer) bservice.checkBookOut(bookLoans);
+				
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			}
+		} 
+		
+		
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}

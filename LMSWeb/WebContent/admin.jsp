@@ -6,4 +6,7 @@
 	
 	<a href="author.jsp">Author Services</a><br/>
 	<a href="book.jsp">Book Services</a><br/>
+	<a href="publisher.jsp">Publisher Services</a><br/>
+	<a href="borrowadmin.jsp">Borrower Services</a><br/>
+	<a href="branch.jsp">Library Branch Services</a><br/>
 </div>

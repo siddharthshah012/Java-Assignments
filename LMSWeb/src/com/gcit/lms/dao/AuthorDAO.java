@@ -92,4 +92,9 @@ public class AuthorDAO extends BaseDAO {
 		return authors;
 	}
 
+	public Integer totalAuthorCount() throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return getCount("select count(*) from tbl_author;");
+	}
+
 }

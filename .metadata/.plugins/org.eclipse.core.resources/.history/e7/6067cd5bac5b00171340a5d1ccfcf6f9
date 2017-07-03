@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- saved from url=(0095)http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+	<title>Themewagon Live Demo | Timer-Free Responsive Multi Page Personal Bootstrap Template</title>
+
+	<!-- Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" type="text/css" href="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/demo.css">
+
+	<style>
+	body {
+	    height: calc(100% - 51px);
+	    box-sizing: content-box;
+	    min-height: 600px;
+	}
+	</style>
+</head>
+<body>
+
+<div id="switcher">
+		<div class="center">
+            <div class="logo">
+                <a href="http://www.themewagon.com/">
+					<img class="logo" src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/logo-demo.png" alt="ThemeWagon">
+				</a>
+            </div>
+            				
+                <ul>
+                    <li id="theme_list">
+                    	<a id="theme_select" href="https://themewagon.com/themes">View All Themes</a>
+                    </li>	
+                </ul>
+                <div class="responsive">
+                    <a href="http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template#" class="desktop active" title="View Desktop Version"></a> 
+                    <a href="http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template#" class="tabletlandscape" title="View Tablet Landscape (1024x768)"></a> 
+                    <a href="http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template#" class="tabletportrait" title="View Tablet Portrait (768x1024)"></a> 
+                    <a href="http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template#" class="mobilelandscape" title="View Mobile Landscape (480x320)"></a>
+                    <a href="http://demo.themewagon.com/preview/timer-free-responsive-multi-page-personal-bootstrap-template#" class="mobileportrait" title="View Mobile Portrait (320x480)"></a>
+                </div>
+                
+                <ul class="links">
+                    <li class="download">
+                    	<a href="https://themewagon.com/themes/timer-free-responsive-multi-page-personal-bootstrap-template/">
+                    		<img src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/download.png" alt="">
+                    		Download
+                    	</a>
+                    </li>		
+                    <li class="close">
+                    	<a href="http://technext.github.io/timer-html/index.html">
+                    		<img src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/cross.png" alt=""> 
+                    		Close
+                    	</a>
+                    </li>		
+                </ul>
+        </div>
+    </div>
+
+    <iframe id="iframe" src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/index.html" frameborder="0" width="100%"></iframe>
+
+    <script async="" src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/analytics.js.download"></script><script src="./Themewagon Live Demo _ Timer-Free Responsive Multi Page Personal Bootstrap Template_files/jquery.min.js.download"></script>
+
+    <script type="text/javascript">
+    	var IS_IPAD=navigator.userAgent.match(/iPad/i)!=null;
+    	$("#header-bar").hide();
+			clicked="desktop";
+			var t= {
+				desktop:"100%",tabletlandscape:1040,tabletportrait:788,mobilelandscape:500,mobileportrait:340,placebo:0
+			}
+			;
+			jQuery(".responsive a").on("click",function() {
+				var e=jQuery(this);
+				for (device in t) {
+					if(e.hasClass(device)) {
+						clicked=device;
+						jQuery("#iframe").width(t[device]);
+						if(clicked==device) {
+							jQuery(".responsive a").removeClass("active");
+							e.addClass("active")
+						}
+					}
+				}
+				return false
+			}
+			);
+			if(IS_IPAD) {
+				$("#iframe").css("padding-bottom","60px")
+			}
+    </script>
+
+	 	    <script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-55162400-1', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
+
+	
+
+
+</body></html>

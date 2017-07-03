@@ -1,18 +1,22 @@
 package com.gcit.assignment1.ex1;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GuessNumber {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		// TODO Auto-generated method stub
-		
+		/*
 		int MaxRandNumber;
 		int MinRandNumber;
 		int userinput;
 		
 		@SuppressWarnings("resource")
+		
+		
 		Scanner scanner= new Scanner(System.in);
 		
 		Random randomNumber = new Random();
@@ -42,7 +46,18 @@ public class GuessNumber {
 		}
 		
 		System.out.println("Sorry");
-		return;
+		
+		
+		return;*/
+		
+		
+		String date = "2017-07-06 00:05:30.0";
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+		Date parsedDate = df.parse(date);
+		Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+		
+		System.out.println(timestamp);
 		
 	}
 

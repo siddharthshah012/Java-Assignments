@@ -1,0 +1,11 @@
+package com.gcit.LibrarySystem.test;
+
+public class Administrator {
+	
+	
+public void adminDisplay(){
+		
+		System.out.println("Admin");
+	}
+
+}

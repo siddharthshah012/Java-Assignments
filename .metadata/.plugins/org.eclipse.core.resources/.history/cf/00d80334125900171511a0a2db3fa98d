@@ -1,0 +1,18 @@
+<%@include file="include.html" %>
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+    
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%AdminService adminService = new AdminService();
+List<Author> authors = adminService.getAllAuthors();
+Integer authorId = Integer.parseInt(request.getParameter("authorId"));
+Author author = adminService.getAuthorById(authorId);%>
+<div class="jumbotron">
+

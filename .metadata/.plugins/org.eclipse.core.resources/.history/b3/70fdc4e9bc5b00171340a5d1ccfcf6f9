@@ -1,0 +1,12 @@
+package com.gcit.lms.entity;
+
+public class LibraryBranch {
+	
+	private Integer branchId;
+	private String branchName;
+	private String branchAddress;
+	private List<Book> books;
+	private List<BookLoans> bookLoans;
+	private List<BookCopies> bookCopies;
+
+}

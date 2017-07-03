@@ -1,0 +1,90 @@
+package com.gcit.lms.dao;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.gcit.lms.entity.Genre;
+
+public class GenreDAO extends BaseDAO{
+
+	public GenreDAO(Connection conn) {
+		super(conn);
+		// TODO Auto-generated constructor stub
+	}
+
+	public List<Genre> readAllGenres() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void addgenre(Genre genre) throws SQLException {
+		save("Insert into tbl_genre(genreName) values (?)",
+				new Object[] { genre.getGenreName()});
+	}
+	public void updategenre(Genre genre) throws SQLException {
+		save("Update tbl_genre set genreName= ? where genreId = ?",
+				new Object[] { genre.getGenreName(), genre.getGenreId() });
+	}
+
+	public void deletegenre(Genre genre) throws SQLException {
+		save("delete from tbl_genre where genreId = ?", new Object[] {genre.getGenreId()});
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Genre> readallgenres() throws SQLException{
+		return (List<Genre>) read("select *from tbl_genre", null);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Genre> readallgenresbyname(String searchString) throws SQLException{
+		searchString = "%"+searchString+"%";
+		return (List<Genre>) read("select * from tbl_genre where genreName like ?", new Object[] {searchString});
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Genre readgenresbypk(Integer genreId) throws SQLException{
+		List<Genre> generes = (List<Genre>) read("select * from tbl_genre where genreId=?", new Object[] {genreId});
+		if(generes!=null){
+			return generes.get(0) ;	
+		}
+		return null;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Genre> extractdata(ResultSet rs) throws SQLException {
+		List<Genre> genres = new ArrayList<>();
+		BookDAO bdao = new BookDAO(conn);
+		while(rs.next()){
+			Genre g = new Genre();
+			g.setGenreId(rs.getInt("genreId"));
+			g.setGenreName(rs.getString("genreName"));
+			g.setBooks((List<Book>) bdao.readFirstLevel("select * from tbl_book where bookId IN(select bookId from tbl_book_genres where ge=?) ", new Object[]{g.getGenreId()}));
+			
+			genres.add(g);
+			
+			
+		}
+		return genres;
+	}
+	
+	@Override
+	public List<Genre> extractdataFirstLevel(ResultSet rs) throws SQLException {
+		List<Genre> genres = new ArrayList<>();
+		while(rs.next()){
+			Genre g = new Genre();
+			g.setGenreId(rs.getInt("genreId"));
+			g.setGenreName(rs.getString("genreName"));
+			
+			genres.add(g);
+			
+			
+		}
+		return genres;
+	}
+}

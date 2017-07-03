@@ -5,7 +5,15 @@
 
 <% 
 AdminService adminService = new AdminService();
-List<Publisher> publishers = adminService.getAllPublisher(); %>
+List<Publisher> publishers = adminService.getAllPublisher();
+//Integer pubcount
+
+
+
+
+
+
+%>
 <div class="jumbotron">
 
 	<h1>Welcome to GCIT Library Management System</h1>

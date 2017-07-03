@@ -1,0 +1,281 @@
+package com.gcit.lms.service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gcit.lms.dao.BookCopiesDAO;
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.entity.Book;
+
+public class LibrarianService {
+	ConnectionUtil cUtil = new ConnectionUtil();
+	public void saveBook(Book book) throws SQLException {
+		Connection conn = null;
+
+		conn = cUtil.getConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try {
+			if (book.getBookId() != null) {
+				bdao.updateBook(book);
+			} else {
+				bdao.addBook(book);
+			}
+
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	public List<Book> getAllBooks(Integer pageNo) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try {
+				return bdao.readAllBooks(pageNo);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public Integer getBooksCount() throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try {
+				return bdao.getBooksCount();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public Book getBookByPK(Integer bookId) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try {
+				return bdao.readBooksByPK(bookId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public void deleteBook(Book book) throws SQLException {
+		Connection conn = null;
+
+		conn = cUtil.getConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try {
+			bdao.deleteBook(book);
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	public List<Branch> getAllBranches(Integer pageNo) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BranchDAO brdao = new BranchDAO(conn);
+		try {
+				return brdao.readAllBranches(pageNo);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public Integer getBranchesCount() throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BranchDAO brdao = new BranchDAO(conn);
+		try {
+				return brdao.getBranchesCount();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public void saveBranch(Branch branch) throws SQLException {
+		Connection conn = null;
+
+		conn = cUtil.getConnection();
+		BranchDAO brdao = new BranchDAO(conn);
+		try {
+			if (branch.getBranchId()!=null) {
+				brdao.updateBranch(branch);
+			} else {
+				brdao.addBranch(branch);
+			}
+
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	public Branch getBranchByPK(Integer branchId) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BranchDAO brdao = new BranchDAO(conn);
+		try {
+				return brdao.readBranchesByPK(branchId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return null;
+	}
+	
+	public void deleteBranch(Branch branch) throws SQLException {
+		Connection conn = null;
+
+		conn = cUtil.getConnection();
+		LibraryBranchDAO brdao = new LibraryBranchDAO(conn);
+		try {
+			brdao.deleteBranch(branch);
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	public Integer getNoCopies(int branchId,int bookId) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookCopiesDAO cdao = new BookCopiesDAO(conn);
+		try {
+				return cdao.numCopies(branchId,bookId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+		return 0;
+	}
+	
+	public void insertCopies(int branchId,int bookId,int numbCopies) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookCopiesDAO cdao = new BookCopiesDAO(conn);
+		try {
+				cdao.addCopies(branchId,bookId,numbCopies);
+				conn.commit();
+		} 
+
+		catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+	}
+	
+	public void updateCopies(int branchId,int bookId,int numbCopies) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookCopiesDAO cdao = new BookCopiesDAO(conn);
+		try {
+				cdao.updateCopies(branchId,bookId,numbCopies);
+				conn.commit();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		
+	}
+	
+	public int readCopies(int branchId,int bookId) throws SQLException {
+		Connection conn = null;
+		conn = cUtil.getConnection();
+		BookCopiesDAO cdao = new BookCopiesDAO(conn);
+		List<Integer> l = new ArrayList<Integer>();
+		try {
+			l = cdao.readCopies(branchId,bookId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+        if(l.isEmpty())
+        	return 0;
+        return l.get(0);
+	}
+	
+}

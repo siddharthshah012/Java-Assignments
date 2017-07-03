@@ -1,0 +1,39 @@
+package com.gcit.lms.dao;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gcit.lms.entity.Genre;
+
+public class GenreDAO extends BaseDAO{
+
+	public GenreDAO(Connection conn) {
+		super(conn);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public List<?> extractData(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		List<Genre> genre = new ArrayList<Genre>();
+		
+		while(rs.next()){
+			Genre b = new Genre();
+			b.setGenreId(rs.getInt("genre_id"));
+			b.setGenreName(rs.getString("genre_name"));
+						
+			genre.add(b);
+		}
+		return genre;
+	}
+
+}

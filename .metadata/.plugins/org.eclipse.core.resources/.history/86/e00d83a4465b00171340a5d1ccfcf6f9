@@ -1,0 +1,50 @@
+<%@page import="com.gcit.lms.service.BorrowerService"%>
+<%@ include file="include.html"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.gcit.lms.entity.Library" %>
+<%@ page import="com.gcit.lms.entity.Book" %>
+<%@ page import="com.gcit.lms.service.AdminService" %>
+
+
+<% int cardNo = Integer.parseInt(request.getParameter("cardNo")); %>
+<%	
+	BorrowerService bservice = new BorrowerService();
+	List<Library> branches = bservice.getAllBranches();
+	//List<Library> branch = new ArrayList<Library>();
+	
+%>
+${message }
+
+<div>
+	
+	<table class="table">
+		<tr>
+			<th>Branch ID</th>
+			<th>Branch Name</th>
+			<th>Branch Address</th>
+			<th>SELECT</th>
+		</tr>
+		<%for(Library l: branches){ %>
+		<tr>
+			<td><%=branches.indexOf(l)+1 %></td>
+			<td><%=l.getBranchName() %></td>	
+			<td><%=l.getBranchAddress() %></td>
+			<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
+			data-target="#myModal1" href="booksinbranch.jsp?branchId=<%= l.getBranchId()%>&cardNo=<%=cardNo%>">SELECT!</button></td>	
+		</tr>
+		<%} %>
+		<%out.print(cardNo) ;%>
+	</table>
+	
+</div>
+
+<div id="myModal1" class="modal fade" tabindex="-1" role="dialog"
+	aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+		
+		</div>
+	</div>
+</div>
+

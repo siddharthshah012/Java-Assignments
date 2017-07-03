@@ -1,0 +1,36 @@
+<%@include file="include.html" %>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@page import="com.gcit.lms.entity.*" %>
+<% 
+	AdminService adminService = new AdminService();
+	List<Borrower> borrower = adminService.getAllBorrower();
+%>
+
+<div class ="jumbotron">
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Below are the list of Books in LMS</h2>
+	<a href="welcome.jsp">Welcome page</a></br>
+	<a href="book.jsp">GO back</a></br>
+	${message} 
+
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<%for(Borrower b: borrower){ %>
+		<tr>
+			<td><%=borrower.indexOf(b)+1 %></td>
+			<td><%=b%></td>		
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteBook?bookId=<%=b.getBookId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+</div>

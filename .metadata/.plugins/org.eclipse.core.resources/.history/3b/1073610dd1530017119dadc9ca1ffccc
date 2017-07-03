@@ -1,0 +1,138 @@
+package com.gcit.LibrarySystem.test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class Administrator {
+	
+	Scanner scanner  = new Scanner(System.in);
+	BufferedReader reader = 
+            new BufferedReader(new InputStreamReader(System.in));
+
+	public void adminDisplay(){
+		LibraryManagement lms = new LibraryManagement();
+		System.out.println("Admin");
+		System.out.println("1)	Add/Update/Delete Book and Author");
+		System.out.println("2)	Add/Update/Delete Publishers");
+		System.out.println("3)	Add/Update/Delete Library Branches");
+		System.out.println("4)	Add/Update/Delete Borrowers");
+		System.out.println("5)	Over-ride Due Date for a Book Loan");
+		System.out.println("6)  Quit to previous menu");
+		
+		int option =0;
+		
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):bookandAuthor();
+				break;
+		case(2):publishers();
+				break;
+		case(3):libraryBranch();
+				break;
+		case(4):borrowers();
+				break;
+		case(5):overrideDueDate();
+				break;
+		case(6):
+		default:
+		}
+		
+		
+	}
+	
+	public void bookandAuthor(){
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+		
+	}
+	public void publishers(){
+		
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+	}
+	public void libraryBranch(){
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+		
+	}
+	
+	public void borrowers(){
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+		
+	}
+	
+	public void overrideDueDate(){
+		
+	}
+	
+	
+
+}

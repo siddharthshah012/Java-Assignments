@@ -1,0 +1,71 @@
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@page import="com.gcit.lms.entity.Book"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+
+    
+<%
+	AdminService adminService = new AdminService();
+	List<Book> books = new ArrayList<>();
+	Integer bookCount = adminService.getAuthorsCount();
+	int pages = 0;
+	if (authCount % 10 > 0) {
+		pages = authCount / 10 + 1;
+	} else {
+		pages = authCount / 10;
+	}
+	if (request.getAttribute("books") != null) {
+		books = (List<Book>) (request.getAttribute("books"));
+	} else {
+		books = adminService.getAllBooks(1, null);
+	}
+%>    
+     
+
+<div class ="jumbotron">
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Below are the list of Books in LMS</h2>
+	<a href="welcome.jsp">Welcome page</a></br>
+	<a href="book.jsp">GO back</a></br>
+	${message} 
+
+	<table class="table">
+		<tr>
+			<th>Book ID</th>
+			<th>Book Title</th>
+			<th>Author Name</th>
+			<th>Genre</th>
+			<th> Publisher</th>
+			<th>EDIT</th>
+			<th>Delete</th>
+		</tr>
+		<%for(Book b: books){ %>
+		<tr>
+			<td><%=books.indexOf(b)+1 %></td>
+			<td><%=b.getTitle()%></td>
+			<td>
+			<% 
+			for(Author a: b.getAuthors()){
+				out.println(a.getAuthorName()+"|");
+			} 
+			%>
+			</td>
+			<td>
+				<% 
+				for(Author a: b.getGenres()){
+					out.println(a.+"|");
+				} 
+				%>
+			</td>
+			
+			<td><button type="button" class="btn btn-sm btn-primary"
+					data-toggle="modal" data-target="#editAuthorModal"
+					href="editbook?authorId=<%=b.getBookId()%>">Edit!</button></td>		
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteBook?bookId=<%=b.getBookId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+</div>

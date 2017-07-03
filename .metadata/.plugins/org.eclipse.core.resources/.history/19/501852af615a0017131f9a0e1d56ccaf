@@ -1,0 +1,14 @@
+package com.gcit.lms.dao;
+
+import java.util.List;
+
+import com.gcit.lms.entity.Genre;
+
+public class GenreDAO extends BaseDAO{
+
+	public List<Genre> readAllGenres() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

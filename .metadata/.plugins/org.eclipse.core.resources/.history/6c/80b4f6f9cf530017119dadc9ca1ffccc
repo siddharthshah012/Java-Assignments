@@ -1,0 +1,30 @@
+package com.gcit.LibrarySystem.test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class Administrator {
+	
+	Scanner scanner  = new Scanner(System.in);
+	BufferedReader reader = 
+            new BufferedReader(new InputStreamReader(System.in));
+
+	public void adminDisplay(){
+		
+		System.out.println("Admin");
+		System.out.println("1)	Add/Update/Delete Book and Author");
+		System.out.println("2)	Add/Update/Delete Publishers");
+		System.out.println("3)	Add/Update/Delete Library Branches");
+		System.out.println("4)	Add/Update/Delete Borrowers");
+		System.out.println("5)	Over-ride Due Date for a Book Loan");
+		System.out.println("6)  Quit to previous menu");
+		
+		int option =0;
+		
+		option = scanner.nextInt();
+		
+		
+	}
+
+}

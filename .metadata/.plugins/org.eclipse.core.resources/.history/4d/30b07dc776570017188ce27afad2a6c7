@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+    
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%AdminService adminService = new AdminService();
+List<Author> authors = adminService.getAllAuthors();
+/*Integer authorId = Integer.parseInt(request.getParameter("authorId"));
+Author author = adminService.getAuthorId(authorId);*/%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Update Author Details</title>
+</head>
+<body>
+<form action="editAuthor" method="post">
+		<h3>ENTER THE DETAILS TO UPDATE</h3>>
+		ENTER AUTHOR NAME: 	<input type="text" name="authorName"><br />
+		<input type="hidden" name="authorId" value="<%=author.getAuthorId()%>"><br /> 
+		
+		<button type="button" >Close</button>
+		<button type="submit" >Save changes</button>
+	</form>
+</body>
+</html>
+
+

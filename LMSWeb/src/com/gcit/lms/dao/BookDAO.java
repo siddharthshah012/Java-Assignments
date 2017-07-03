@@ -119,9 +119,9 @@ public class BookDAO extends BaseDAO{
 		return books;
 	}
 
-	public Integer getBooksCount() {
+	public Integer getBooksCount() throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		return null;
+		return getCount("select count(*) from tbl_book;");
 	}
 
 	public void updateBookPublisher(Integer bookId, Integer pubId) throws SQLException {
@@ -130,6 +130,11 @@ public class BookDAO extends BaseDAO{
 		//System.out.println("update pub id: "+pubId+" book id: "+bookId);
 		save("update tbl_book set pubId = ? where bookId = ?", new Object[]{pubId,bookId});
 		
+	}
+
+	public Integer totalBookCount() throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return getCount("select count(*) from tbl_book;");
 	}
 
 }

@@ -1,0 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@page import="com.gcit.lms.entity.Publisher"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@include file="include.html" %>
+
+<%
+	Integer publisherId = Integer.parseInt(request.getParameter("publisherId"));
+	AdminService service = new AdminService();
+	Publisher publisher = service.getPublisherById(publisherId);
+%>

@@ -1,0 +1,124 @@
+package com.gcit.lms.service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.BookCopiesDAO;
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.BookLoansDAO;
+import com.gcit.lms.dao.BorrowerDAO;
+import com.gcit.lms.dao.GenreDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
+import com.gcit.lms.dao.PublisherDAO;
+import com.gcit.lms.entity.Book;
+
+import com.gcit.lms.entity.LibraryBranch;
+
+public class LibrarianService {
+
+	@Autowired
+	AuthorDAO adao;
+	
+	@Autowired
+	BookDAO bdao;
+	
+	@Autowired
+	PublisherDAO pdao;
+	
+	@Autowired
+	BorrowerDAO bodao;
+	
+	@Autowired
+	LibraryBranchDAO lbdao;
+	
+	@Autowired
+	GenreDAO gdao;
+	
+	@Autowired
+	BookLoansDAO bldao;
+	
+	@Autowired
+	BookCopiesDAO cdao;
+	
+	@Transactional
+	public void saveBook(Book book) throws SQLException {
+			if (book.getBookId() != null) {
+				bdao.updateBook(book);
+			} else {
+				bdao.addBook(book);
+			}
+	}
+	
+	public List<Book> getAllBooks(Integer pageNo, String searchString) throws SQLException {
+		
+				return bdao.readAllBooks(pageNo);
+	}
+	
+	public Integer getBooksCount() throws SQLException, ClassNotFoundException {
+				return bdao.getBooksCount();
+	}
+	
+	public Book getBookByPK(Integer bookId) throws SQLException {
+		
+				return bdao.readBooksByPK(bookId);
+	}
+	@Transactional
+	public void deleteBook(Book book) throws SQLException {
+		
+			bdao.deleteBook(book);
+		
+	}
+	
+	public List<LibraryBranch> getAllBranches(Integer pageNo) throws SQLException, ClassNotFoundException {
+		
+				return lbdao.readAllBranches(pageNo);
+	}
+	
+	public Integer getBranchesCount() throws SQLException {
+				return lbdao.getBranchesCount();
+	}
+	
+	@Transactional
+	public void saveBranch(LibraryBranch branch) throws Exception {
+		
+			if (branch.getBranchId()!=0) {
+				lbdao.updateLibBranch(branch);
+			} else {
+				lbdao.addBranch(branch);
+			}
+	}
+	
+	public LibraryBranch getBranchByPK(Integer branchId) throws SQLException, ClassNotFoundException {
+		
+				return lbdao.readLibBranchByID(branchId);
+
+	}
+	
+	@Transactional
+	public void deleteBranch(LibraryBranch branch) throws Exception {
+		
+			lbdao.deleteLibBranch(branch);
+	}
+	
+	public Integer getNoCopies(int branchId,int bookId) throws SQLException {
+
+				return cdao.numCopies(branchId,bookId);
+
+	}
+	@Transactional
+	public void insertCopies(int branchId,int bookId,int numbCopies) throws SQLException {
+		
+				cdao.addCopies(branchId,bookId,numbCopies);
+		
+		
+	}
+	
+	
+	
+	
+}

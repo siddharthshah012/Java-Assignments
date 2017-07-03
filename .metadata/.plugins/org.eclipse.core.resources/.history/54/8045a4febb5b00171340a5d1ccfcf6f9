@@ -1,0 +1,9 @@
+package com.gcit.lms.entity;
+
+public class Borrower {
+	
+	private Integer cardNo;
+	private String name;
+	private String address;
+
+}

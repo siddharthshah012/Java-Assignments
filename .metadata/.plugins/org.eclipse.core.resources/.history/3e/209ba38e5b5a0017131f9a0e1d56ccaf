@@ -1,0 +1,149 @@
+package com.gcit.lms.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.gcit.lms.entity.Author;
+import com.gcit.lms.entity.Book;
+import com.gcit.lms.service.AdminService;
+
+/**
+ * Servlet implementation class AdminServlet
+ */
+@WebServlet({ "/addAuthor", "/deleteAuthor", "/editAuthor", "/pageAuthors", "/searchAuthors" })
+public class AdminServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public AdminServlet() {
+		super();
+	}
+
+	AdminService adminService = new AdminService();
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		String reqUrl = request.getRequestURI().substring(request.getContextPath().length(),
+				request.getRequestURI().length());
+		Author author = new Author();
+		String message = "";
+		Boolean isAjax = Boolean.FALSE;
+		switch (reqUrl) {
+		case "/deleteAuthor":
+			if (request.getParameter("authorId") != null && !request.getParameter("authorId").isEmpty()) {
+				author.setAuthorId(Integer.parseInt(request.getParameter("authorId")));
+
+				try {
+					adminService.deleteAuthor(author);
+					message = "Author deleted Successfully";
+				} catch (SQLException e) {
+					e.printStackTrace();
+					message = "Author delete failed. Try Again!";
+				}
+			}
+			break;
+		case "/pageAuthors":
+			if (request.getParameter("pageNo") != null && !request.getParameter("pageNo").isEmpty()) {
+				Integer pageNo = Integer.parseInt(request.getParameter("pageNo"));
+
+				try {
+					List<Author> authors = adminService.getAllAuthors(pageNo, null);
+					request.setAttribute("authors", authors);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			break;
+		case "/searchAuthors":
+			String searchString = request.getParameter("searchString");
+			System.out.println(searchString);
+			try {
+				
+				List<Author> authors = adminService.getAllAuthors(1, searchString);
+				StringBuffer strBuf = new StringBuffer();
+				strBuf.append("<tr><th>Author ID</th><th>Author Name</th><th>Books by Author</th><th>Edit</th><th>Delete</th></tr>");
+				for(Author a: authors){
+					strBuf.append("<tr><td>+"+authors.indexOf(a) + 1+"</td><td>"+a.getAuthorName()+"</td><td>");
+					for(Book b: a.getBooks()){
+						strBuf.append(b.getTitle() + '|');
+					}
+					strBuf.append("</td><td><button type='button' class='btn btn-sm btn-primary'data-toggle='modal' data-target='#editAuthorModal'href='editauthor.jsp?authorId="+a.getAuthorId()+"'>Edit!</button></td>");
+					strBuf.append("<td><button type='button' class='btn btn-sm btn-danger' onclick='javascript:location.href='deleteAuthor?authorId="+a.getAuthorId()+"''>Delete!</button></td></tr>");
+				}
+				response.getWriter().write(strBuf.toString());
+				isAjax = Boolean.TRUE;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+
+		default:
+			break;
+		}
+		if(!isAjax){
+			request.setAttribute("message", message);
+			RequestDispatcher rd = request.getRequestDispatcher("/viewauthors.jsp");
+			rd.forward(request, response);
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String reqUrl = request.getRequestURI().substring(request.getContextPath().length(),
+				request.getRequestURI().length());
+		Author author = new Author();
+		switch (reqUrl) {
+		case "/addAuthor":
+			author.setAuthorName(request.getParameter("authorName"));
+			try {
+				adminService.saveAuthor(author);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+		case "/editAuthor":
+			author.setAuthorName(request.getParameter("authorName"));
+			author.setAuthorId(Integer.parseInt(request.getParameter("authorId")));
+			try {
+				adminService.saveAuthor(author);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+		case "/searchAuthors":
+			String searchString = request.getParameter("searchString");
+			try {
+				
+				List<Author> authors = adminService.getAllAuthors(1, searchString);
+				request.setAttribute("authors", authors);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
+		}
+		RequestDispatcher rd = request.getRequestDispatcher("/viewauthors.jsp");
+		rd.forward(request, response);
+	}
+
+}

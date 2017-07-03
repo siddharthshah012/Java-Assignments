@@ -36,23 +36,7 @@ public class LibrarianService {
 		}
 	}
 	
-	public List<Book> getAllBooks(Integer pageNo) throws SQLException {
-		Connection conn = null;
-		conn = cUtil.getConnection();
-		BookDAO bdao = new BookDAO(conn);
-		try {
-				return bdao.readAllBooks(pageNo);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (conn != null) {
-				conn.close();
-			}
-		}
-		
-		return null;
-	}
+	
 	
 	public Integer getBooksCount() throws SQLException, ClassNotFoundException {
 		Connection conn = null;

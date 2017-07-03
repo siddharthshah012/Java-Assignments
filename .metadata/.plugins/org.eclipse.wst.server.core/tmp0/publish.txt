@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Mon Jul 03 00:41:31 EDT 2017
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\Siddharth\\.m2\\repository\\org\\springframework\\spring-web\\4.3.7.RELEASE\\spring-web-4.3.7.RELEASE.jar=C\:\\Setup\\STS\\sts-bundle\\pivotal-tc-server-developer-3.1.0.RELEASE\\base-instance\\wtpwebapps\\SpringLMS\\WEB-INF\\lib\\spring-web-4.3.7.RELEASE.jar
+org.eclipse.jst.jee.server\:SpringLMS=C\:\\Setup\\STS\\sts-bundle\\pivotal-tc-server-developer-3.1.0.RELEASE\\base-instance\\wtpwebapps\\SpringLMS

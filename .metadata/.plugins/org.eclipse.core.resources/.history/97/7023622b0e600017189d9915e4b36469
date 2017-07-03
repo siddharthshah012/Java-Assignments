@@ -1,0 +1,10 @@
+<%@include file="include.html"%>
+<%@page import="java.util.*"%>
+
+
+      <form action="updatecopies" method="post">       
+		Enter new number of copies: <input type="text" name="numbCopies">
+			<input type="hidden" name="bookId" value=${bookId }>
+			<input type="hidden" name="branchId" value=${branchId }>
+        <button type="submit" class="btn btn-primary">copies</button>
+      </form>

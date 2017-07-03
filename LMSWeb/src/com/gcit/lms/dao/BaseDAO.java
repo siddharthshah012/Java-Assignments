@@ -51,18 +51,16 @@ public abstract class BaseDAO {
 		}
 		return null;
 	}
-	public Integer getCount(String string, Object[] vals) throws SQLException{
-		PreparedStatement pstmt = conn.prepareStatement(string);
+	public Integer getCount(String query) throws ClassNotFoundException, SQLException {
+		
+		PreparedStatement pstmt = null;
+		pstmt = conn.prepareStatement(query);
 		ResultSet rs = pstmt.executeQuery();
-		int count=0;
-		while (rs.next()){
-			count = rs.getInt("count(cardNo)");
-		}
-		if (count !=0){
-			return count;
-		}
-		else{
-			return pageNo;
+
+		if (rs.next()) {
+			return rs.getInt(1);
+		} else {
+			return 0;
 		}
 	}
 

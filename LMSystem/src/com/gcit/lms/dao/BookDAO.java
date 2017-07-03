@@ -62,6 +62,7 @@ public class BookDAO extends BaseDAO{
 		return getCount("select count(*) from tbl_book;", null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Book> extractData(ResultSet rs) throws SQLException {
 		List<Book> books = new ArrayList<>();

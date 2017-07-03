@@ -1,0 +1,242 @@
+package com.gcit.LibrarySystem.test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class Administrator {
+	
+	Scanner scanner  = new Scanner(System.in);
+	BufferedReader reader = 
+            new BufferedReader(new InputStreamReader(System.in));
+
+	public void adminDisplay() throws IOException, SQLException{
+		LibraryManagement lms = new LibraryManagement();
+		System.out.println("Admin");
+		System.out.println("1)	Add/Update/Delete Book and Author");
+		System.out.println("2)	Add/Update/Delete Publishers");
+		System.out.println("3)	Add/Update/Delete Library Branches");
+		System.out.println("4)	Add/Update/Delete Borrowers");
+		System.out.println("5)	Over-ride Due Date for a Book Loan");
+		System.out.println("6)  Quit to previous menu");
+		
+		int option =0;
+		
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):bookandAuthor();
+				break;
+		case(2):publishers();
+				break;
+		case(3):libraryBranch();
+				break;
+		case(4):borrowers();
+				break;
+		case(5):overrideDueDate();
+				break;
+		case(6):lms.mainDisplay();
+		default:
+		}
+		
+		
+	}
+	
+	public void bookandAuthor() throws IOException, SQLException{
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):addBookandAuthor();
+				break;
+		case(2):updateBookandAuthor();
+				break;
+		case(3):deleteBookandAuthor();
+				break;
+		case(4):adminDisplay();
+				break;
+			
+		}
+		
+	}
+	public void addBookandAuthor() throws IOException, SQLException{
+		
+		System.out.println("Enter the Book name to add or enter N/A");
+		String addBook = "";
+		addBook = reader.readLine();
+		
+		System.out.println("Enter the Name of Author to add or enter N/A");
+		String addAuthor="";
+		addAuthor = reader.readLine();
+		
+		System.out.println("Do you wish to Associate author with the book?");
+		System.out.println("1) Yes");
+		System.out.println("2) No");
+		System.out.println("3) Add Only Author Name");
+		System.out.println("4) add only Book title");
+		int acceptDecline;
+		acceptDecline = scanner.nextInt();
+		String query="";
+		String query1="";
+		String query2="";
+		String query3="";
+		
+		Connection conn = JDBCConnect.getConnection();
+
+		Statement statement;
+		statement = conn.createStatement();
+		
+		switch(acceptDecline){
+		
+		case(1):query = "INSERT INTO tbl_book(title) VALUES ('"+addBook+"');";
+				query1 = "INSERT INTO tbl_author(authorName) Values ('"+addAuthor+"');";
+				query2 = "Select bookId,authorId FROM tbl_book,tbl_author "
+						+ "WHERE tbl_book.title='"+addBook+"' and tbl_author.authorName='"+addAuthor+"'"
+						+ "order by bookId desc,authorId desc limit 1;";
+		
+				
+				int rs = statement.executeUpdate(query);
+				int rs1 = statement.executeUpdate(query1);
+				int bookId = 0, authorId = 0;
+				ResultSet rs2 = statement.executeQuery(query2);
+				while (rs2.next()){
+					bookId = rs2.getInt("bookId");
+					authorId=rs2.getInt("authorId");
+				}
+				
+				query3 ="INSERT INTO tbl_book_authors VALUES ("+bookId+","+authorId+");";
+				int rs3 = statement.executeUpdate(query3);
+				conn.commit();
+				conn.close();
+				
+				break;
+	
+		case(2):query = "INSERT INTO tbl_book(title) VALUES ('"+addBook+"');";
+				query1 ="INSERT INTO tbl_author(authorName) Values ('"+addAuthor+"');";
+				statement.executeUpdate(query);
+				statement.executeUpdate(query1);
+				conn.commit();
+				conn.close();
+				break;
+				
+				
+		case(3):query1 ="INSERT INTO tbl_author(authorName) Values ('"+addAuthor+"');";
+				statement.executeUpdate(query1);
+				conn.commit();
+				conn.close();
+				break;
+				
+		case(4):query = "INSERT INTO tbl_book(title) VALUES ('"+addBook+"');";
+				statement.executeUpdate(query);
+				conn.commit();
+				conn.close();
+				break;
+		case(5):conn.commit();
+				conn.close();
+				break;
+		}
+		
+			
+			
+			
+			
+			
+			
+					
+		
+	}
+	public void updateBookandAuthor(){
+		
+		System.out.println("Enter ");
+	}
+	public void deleteBookandAuthor(){
+		
+		System.out.println("Enter ");
+	}
+	
+	public void publishers(){
+		
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+	}
+	public void libraryBranch(){
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+		
+	}
+	
+	public void borrowers(){
+		
+		System.out.println("What operation do you wish to perform?");
+		System.out.println("1) Add");
+		System.out.println("2) Update");
+		System.out.println("3) Delete");
+		System.out.println("4) Quit to Previous");
+		
+		int option =0;
+		option = scanner.nextInt();
+		
+		switch(option){
+		
+		case(1):
+		case(2):
+		case(3):
+		case(4):
+			
+		}
+		
+	}
+	
+	public void overrideDueDate(){
+		
+	}
+	
+	
+
+}

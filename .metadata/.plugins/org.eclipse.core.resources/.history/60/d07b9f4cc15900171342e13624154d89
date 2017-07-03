@@ -1,0 +1,42 @@
+<%@ include file="include.html"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.gcit.lms.entity.Library" %>
+<%@ page import="com.gcit.lms.entity.Book" %>
+<%@ page import="com.gcit.lms.service.AdminService" %>
+
+<%
+	int cardNum=(Integer)request.getAttribute("cardNo");
+	
+	AdminService adminService = new AdminService();
+	List<Library> branch = new ArrayList<Library>();
+%>
+
+
+<div>
+	
+	<table class="table">
+		<tr>
+			<th>Branch ID</th>
+			<th>Branch Name</th>
+			<th>Branch Address</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<%for(Author a: authors){ %>
+		<tr>
+			<td><%=authors.indexOf(a)+1 %></td>
+			<td><%=a.getAuthorName() %></td>	
+			<td><% for (Book b: a.getBooks()){
+				out.println(b.getTitle()+ "|");
+			}%></td>
+			<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
+			data-target="#editAuthorModal" href="editAuthor.jsp?authorId=<%=a.getAuthorId()%>">EDIT!</button></td>
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteAuthor?authorId=<%=a.getAuthorId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+	
+</div>
+
+

@@ -49,8 +49,6 @@ public class Administrator {
 		default:lms.mainDisplay();
 				break;
 		}
-		
-		
 	}
 	
 	public void bookandAuthor() throws IOException, SQLException{
@@ -596,8 +594,7 @@ public class Administrator {
 		}
 		
 	}
-	
-	
+
 	private void addLibrary() throws IOException, SQLException{
 		
 		System.out.println("Enter the Branch Name that you want to add");
@@ -866,7 +863,7 @@ public class Administrator {
 		ResultSet rs = statement.executeQuery(query);
 		while(rs.next()){
 			storeBookLoan.add(rs.getInt("bookId")+" "+rs.getInt("branchId")+" "+rs.getInt("cardNo")+" "+
-								rs.getDate("dateOut")+" "+rs.getDate("dueDate")+" "+rs.getDate("dateIn"));			
+								rs.getTimestamp("dateOut")+" "+rs.getTimestamp("dueDate")+" "+rs.getTimestamp("dateIn"));			
 		}
 		
 		for (int i =0; i < storeBookLoan.size(); i++){
@@ -881,7 +878,7 @@ public class Administrator {
 		System.out.println("Enter Card no: ");
 		String cardNo = scanner.next();
 		
-		System.out.println("Enter to which date you want to extend");
+		System.out.println("Enter by how many days you want to extend");
 		int extendDay = scanner.nextInt();
 		if (extendDay < 0 && extendDay> 30){overrideDueDate();}
 		
@@ -890,8 +887,8 @@ public class Administrator {
 			String[] splitstr = storeBookLoan.get(i).split(" ");
 			if (splitstr[0].equals(bookId) && splitstr[1].equals(branchId) && splitstr[2].equals(cardNo)){
 				
-				query ="UPDATE tbl_book_loans SET dueDate=ADDDATE(dueDate,"+ extendDay+")"
-						+ " WHERE bookId ="+bookId+" and branchId="+branchId+" and cardNo="+ cardNo+";";
+				query ="UPDATE tbl_book_loans SET dueDate=ADDDATE(dueDate,"+ extendDay+"),dateIn = null"
+						+ " WHERE bookId ="+bookId+" and branchId="+branchId+" and cardNo="+ cardNo+";" ;
 				
 				int rs2 = statement.executeUpdate(query);
 				if (rs2 ==1){System.out.println("Updated succesfully");}
@@ -900,6 +897,6 @@ public class Administrator {
 		}
 		conn.commit();
 		conn.close();
-		borrowers();
+		adminDisplay();;
 	}
 }

@@ -2,6 +2,7 @@ package com.gcit.lms.web;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -11,18 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.util.Strftime;
-
 import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
 import com.gcit.lms.entity.Genre;
+import com.gcit.lms.entity.Publisher;
 import com.gcit.lms.service.AdminService;
 
 /**
  * Servlet implementation class AdminServlet
  */
 @WebServlet({ "/addAuthor", "/deleteAuthor", "/editAuthor", "/pageAuthors", "/searchAuthors",
-			/*"/addBook",*/"/deleteBook","/editBook","/pageBooks","/searchBooks"})
+			"/addBook","/deleteBook","/editBook","/pageBooks","/searchBooks",
+			"/addPublisher","/deletePublisher","/editPublisher","/pagePublishers","/searchPublishers"})
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -132,7 +133,7 @@ public class AdminServlet extends HttpServlet {
 							}
 							break;
 							
-		case"/searchBooks":String searchStringB = request.getParameter("searchStringB");
+		case"/searchBooks":String searchStringB = request.getParameter("searchString");
 							System.out.println(searchStringB);
 							try {
 								List<Book> books = adminService.getAllBooks(1, searchStringB);
@@ -163,8 +164,109 @@ public class AdminServlet extends HttpServlet {
 								e.printStackTrace();
 							}
 							break;
+							
+		case "/deletePublisher":
+			Publisher publisher = new Publisher();
+			List<Publisher> publishers = null;
+			@SuppressWarnings("unused")
+			String path="";
+			if (request.getParameter("publisherId") != null
+					&& !request.getParameter("publisherId").isEmpty()) {
+				publisher.setPublisherId(Integer.parseInt(request.getParameter("publisherId")));
+				
+				try {
+					adminService.deletePublisher(publisher);
+					publishers = adminService.getAllPublishers(1, null);
+					message = "Publisher deleted Successfully";
+					
+					StringBuffer strBuf1 = new StringBuffer();
+					
+					strBuf1.append("<tr><th>ID</th><th>Publisher Name</th>"
+							+ "<th>Publisher Address</th><th>Publisher Phone</th>"
+							+ "<th>EDIT</th><th>DELETE</th></tr>");
+					for (Publisher p: publishers){
+						strBuf1.append("<tr><td>"+(publishers.indexOf(p)+1)+"</td><td>"+p.getPublisherName()+"</td><td>"+p.getPublisherAddress()+""
+								+ "</td><td>"+p.getPublisherPhones()+"</td>");
+						strBuf1.append("<td><button type='button' class='btn btn-sm btn-success' data-toggle='modal' "
+								+ "data-target='#editPubModal' href='editpublishers.jsp?pubId="+p.getPublisherId()+"'>EDIT!</button></td>");
+						strBuf1.append("<td><button type='button' class='btn btn-sm btn-danger' id='publisherId' onclick='deletePub()' value="+p.getPublisherId()+">Delete!</button></td>");
+						strBuf1.append("</tr>");
+					}
+					response.getWriter().write(strBuf1.toString());
+					path="/viewpublishers.jsp";
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+					message = "publisher delete failed. Try Again!";
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
+			request.setAttribute("message", message);
+			RequestDispatcher rdpub = request
+					.getRequestDispatcher("/viewpublishers.jsp");
+			rdpub.forward(request, response);
+			isAjax = Boolean.TRUE;
+			break;
+			
+		case"/pagePublishers":
+			
+			if (request.getParameter("pageNo") != null && !request.getParameter("pageNo").isEmpty()) {
+				Integer pageNo1 = Integer.parseInt(request.getParameter("pageNo"));
+			try {
+				List<Publisher> publishersPage = adminService.getAllPublishers(pageNo1, null);
+				request.setAttribute("publishers", publishersPage);
+				
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//request.setAttribute("message", message);
+			RequestDispatcher rd1 = request.getRequestDispatcher("/viewpublishers.jsp");
+			rd1.forward(request, response);
+			isAjax = Boolean.TRUE;
+			
+			}
+			break;
+		case"/searchPublishers": 
+			String searchStringP = request.getParameter("searchString");
+			System.out.println(searchStringP);
+			
+			try {
+				List<Publisher> publishersSearch = adminService.getAllPublishers(1, searchStringP);
+				StringBuffer strBuf2 = new StringBuffer();
+				
+				strBuf2.append("<tr><th>ID</th><th>Publisher Name</th>"
+						+ "<th>Publisher Address</th><th>Publisher Phone</th>"
+						+ "<th>EDIT</th><th>DELETE</th></tr>");
+				for (Publisher p: publishersSearch){
+					strBuf2.append("<tr><td>"+(publishersSearch.indexOf(p)+1)+"</td><td>"+p.getPublisherName()+"</td><td>"+p.getPublisherAddress()+""
+							+ "</td><td>"+p.getPublisherPhones()+"</td>");
+					strBuf2.append("<td><button type='button' class='btn btn-sm btn-success' data-toggle='modal' "
+							+ "data-target='#editPubModal' href='editpublishers.jsp?pubId="+p.getPublisherId()+"'>EDIT!</button></td>");
+					strBuf2.append("<td><button type='button' class='btn btn-sm btn-danger' id='publisherId' onclick='deletePub()' value="+p.getPublisherId()+">Delete!</button></td>");
+					strBuf2.append("</tr>");
+				}
+				response.getWriter().write(strBuf2.toString());
+				path="/viewpublishers.jsp";
+				
 
+				
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+				
+				
 		default:
 			break;
 		}
@@ -185,6 +287,7 @@ public class AdminServlet extends HttpServlet {
 				request.getRequestURI().length());
 		Author author = new Author();
 		String path="";
+		Boolean flag = Boolean.TRUE;
 		
 		switch (reqUrl) {
 		case "/addAuthor":
@@ -218,7 +321,9 @@ public class AdminServlet extends HttpServlet {
 			path="/viewauthors.jsp";
 			break;
 			
-		case"/addBook":
+		case"/addBook":addBook(request,response);
+				flag = Boolean.FALSE;
+			/*
 			Book book = new Book();
 			book.setTitle(request.getParameter("title"));
 			book.setBookId(Integer.parseInt(request.getParameter("bookId")));
@@ -229,7 +334,7 @@ public class AdminServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			path="/viewbooks.jsp";
+			path="/viewbooks.jsp";*/
 			break;
 		case"/editBook":
 			Book book1 = new Book();
@@ -255,12 +360,113 @@ public class AdminServlet extends HttpServlet {
 			}
 			path="/viewbooks.jsp";
 			break;
+		case"/addPublisher":
+			Publisher publisher = new Publisher();
+
+			// publisher.setPublisherId(Integer.parseInt(request.getParameter("")));
+			publisher.setPublisherName(request.getParameter("publisherName"));
+			publisher.setPublisherAddress(request
+					.getParameter("publisherAddress"));
+			publisher
+					.setPublisherPhones(request.getParameter("publisherPhone"));
+
+			try {
+				adminService.savePublisher(publisher);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			path = "/viewpublishers.jsp";
+			break;
 			
+		case"/searchPublishers": 
+			String searchPublishers = request.getParameter("searchStringP");
+			
+			try {
+				List<Publisher> publishersList = adminService.getAllPublishers(1, searchPublishers);
+				request.setAttribute("publishers", publishersList);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		default:
 			break;
 		}
+		
+		if (flag == Boolean.TRUE){
 		RequestDispatcher rd = request.getRequestDispatcher(path);
 		rd.forward(request, response);
+		}
+	}
+	
+	private void addBook(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+		Book book = new Book();
+		String[] authors, genres,publisher ;
+		String title, publisherData = null;
+		
+		book.setTitle(request.getParameter("bookName"));
+		try{
+			title = request.getParameter("bookName");
+		}catch (NullPointerException e){
+			return ;
+		}
+		
+		try {
+			authors = request.getParameterValues("authorName");
+			genres = request.getParameterValues("genreName");
+			publisherData = request.getParameter("publisherName");
+			publisher = publisherData.split(" ");
+		}catch(NullPointerException e){
+			return;
+		}
+	
+		AdminService service = new AdminService();
+		List<Author> authorList = new ArrayList<>();
+		List<Genre> genreList = new ArrayList<>();
+		Publisher publisherSelected;
+		
+		try {
+			for(String author: authors) {
+				String[] temp = author.split(" ");
+				Author a = service.getAuthorByPK(Integer.parseInt(temp[0]));
+				authorList.add(a);
+			}
+			for(String genre: genres) {
+				String[] temp = genre.split(" ");
+				Genre g = service.getGenreByPK(Integer.parseInt(temp[0]));
+				genreList.add(g);
+			}
+			book.setAuthors(authorList);
+			book.setGenres(genreList);
+			book.setTitle(title);
+			if(!publisherData.isEmpty()) {
+				publisherSelected = service.getPublisherbyPK(Integer.parseInt(publisher[0]));
+				book.setPublisher(publisherSelected);
+			}else
+				book.setPublisher(null);
+			
+			service.saveBook(book);
+		} catch (SQLException e) {
+			//System.out.println("Adding book failed.");
+			e.printStackTrace();
+		}
+		RequestDispatcher rd = request.getRequestDispatcher("/viewbooks.jsp");
+		try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -1,0 +1,10 @@
+<%@include file="include.html" %>
+<div >
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Please Insert Author Details</h2>
+	<form action="addBorrower" method="post">
+		Enter Branch Name to be added: <input type="text" name="authorName"><br />
+		Enter Branch Address to be added:<input type="text">
+		<button type="submit">Add Author!</button>
+	</form>
+</div>

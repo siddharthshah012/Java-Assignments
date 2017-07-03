@@ -1,0 +1,43 @@
+<%@page import="com.gcit.lms.service.BorrowerService"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.gcit.lms.entity.Library" %>
+<%@ page import="com.gcit.lms.entity.*" %>
+<%@include file="include.html" %>
+
+<%@page import="com.gcit.lms.web.*" %>
+<% int branchId = Integer.parseInt(request.getParameter("branchId")); %>
+<% int cardNo = Integer.parseInt(request.getParameter("cardnum")); %>
+<% BorrowerService bservice = new BorrowerService();
+	
+	List<Book> books = bservice.readAllBookswithBranch(branchId);
+	//List<Library> listbooks = bservice.getAllBranchesWithId(branchId);
+	//List<Book> books = BorrowerServlet.library.getBooks();
+%>
+<div>
+	${message}
+<table class="table">
+	<tr>
+			<th>Book ID</th>
+			<th>Book Title</th>
+			<th>Author Name</th>
+			<th>Edit</th>
+		</tr>
+		
+		<%for (Book b: books){ %>
+		<tr><td><%= (books.indexOf(b)+1) %></td>
+		<td><%= b.getTitle() %></td>
+		<td><%for (Author a: b.getAuthors()){
+			out.print(a.getAuthorName()+" ");		
+		}%> </td>
+		
+		<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
+			data-target="#myModal1" onclick="location.href='checkout.jsp?bookId=<%= b.getBookId()%>&branchId=<%=branchId %>'">SELECT!</button></td>
+		<%} %>
+		</tr>
+		
+	</table>
+</div>
+
+
+

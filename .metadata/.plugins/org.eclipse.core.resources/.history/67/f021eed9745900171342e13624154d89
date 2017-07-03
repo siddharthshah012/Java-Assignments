@@ -1,0 +1,12 @@
+<%@include file="include.html" %>
+<div class ="jumbotron">
+
+<form action="" method="">
+
+	PLEASE ENTER YOUR CARD NO:
+	<input type="text" name="cardNo">
+
+</form>
+	
+	
+</div>

@@ -7,9 +7,19 @@
 
 <%
 AdminService adminService = new AdminService();
-List<Author> authors = adminService.getAllAuthors();
+Integer authorsCount = adminService.getAuthorCount();
+List<Author> authors = adminService.getAllAuthors(1);
 /*Integer authorId = Integer.parseInt(request.getParameter("authorId"));
-Author author = adminService.getAuthorId(authorId);*/%>
+Author author = adminService.getAuthorId(authorId);*/
+
+
+
+
+
+
+
+
+%>
 <div class ="jumbotron">
 	<h1>Welcome to GCIT Library Management System</h1>
 	<h2>Below are the list of Authors in LMS</h2>

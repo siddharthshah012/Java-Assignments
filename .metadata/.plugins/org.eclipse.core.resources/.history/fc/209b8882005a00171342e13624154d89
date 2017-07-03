@@ -1,0 +1,22 @@
+package com.gcit.lms.entity;
+
+import java.io.Serializable;
+
+public class BookLoans implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -591623965461921994L;
+	private Book book;
+	private Library library;
+	private Borrower borrower;
+	private String dateOut;
+	
+	private String dueDate;
+	private String dateIn;
+	
+	
+	
+
+}

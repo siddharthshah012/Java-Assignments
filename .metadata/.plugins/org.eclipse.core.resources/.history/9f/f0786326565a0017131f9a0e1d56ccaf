@@ -1,0 +1,80 @@
+
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="java.util.List"%>
+<%@page import="com.gcit.lms.service.AdminService"%>
+<%@page import="com.gcit.lms.entity.Book" %>
+
+<%
+AdminService adminService = new AdminService();
+Integer authorsCount = adminService.getAuthorCount();
+List<Author> authors = adminService.getAllAuthors();
+/*Integer authorId = Integer.parseInt(request.getParameter("authorId"));
+Author author = adminService.getAuthorId(authorId);*/
+
+if (request.getAttribute("authors") != null) {
+	authors = (List<Author>)request.getAttribute("authors");
+	authorsCount = authors.size();
+}else{
+	authors = adminService.getAllAuthors(1);	
+}
+
+
+
+%>
+<div class ="jumbotron">
+	<h1>Welcome to GCIT Library Management System</h1>
+	<h2>Below are the list of Authors in LMS</h2>
+	<a href="welcome.jsp">Welcome page</a></br>
+	<a href="author.jsp">GO back</a></br>
+	${message}
+
+<form action="searchAuthors" method="post">
+	<div class="input-group">
+        	<p><input type="text" class="form-control" placeholder="SEARCH"
+			aria-describedby="basic-addon1" name="searchString" onchange="searchAuthors()"></p>
+		<p><button class="btn btn btn-info" onclick="searchAuthors();">Search</button></p>
+	</div>
+</form>
+
+
+	<table class="table">
+		<tr>
+			<th>Author ID</th>
+			<th>Author Name</th>
+			<th>Book Title</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<%for(Author a: authors){ %>
+		<tr>
+			<td><%=authors.indexOf(a)+1 %></td>
+			<td><%=a.getAuthorName() %></td>	
+			<td><% for (Book b: a.getBooks()){
+				out.println(b.getTitle()+ "|");
+			}%></td>
+			<td><button type="button"  class="btn btn-sm btn-primary" data-toggle="modal" 
+			data-target="#editAuthorModal" href="editAuthor.jsp?authorId=<%=a.getAuthorId()%>">EDIT!</button></td>
+			<td><button type="button" class="btn btn-sm btn-danger" onclick="javascript:location.href='deleteAuthor?authorId=<%=a.getAuthorId()%>'">Delete!</button></td>	
+		</tr>
+		<%} %>
+	</table>
+</div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1"
+	id="editAuthorModal" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content"></div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		// codes works on all bootstrap modal windows in application
+		$('.modal').on('hidden.bs.modal', function(e) {
+			$(this).removeData();
+		});
+	});
+</script>
+
+

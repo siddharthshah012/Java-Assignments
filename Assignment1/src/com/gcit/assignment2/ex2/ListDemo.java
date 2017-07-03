@@ -25,7 +25,7 @@ public class ListDemo {
 		
 		/**********************List in order of insertion************************************/
 		
-		myList.forEach(s -> System.out.println(s));
+		myList.forEach(s -> System.out.println((myList.indexOf(s)+1)+" "+s));
 		
 		/***************List in reverse order using ListIterator***********/
 		ListIterator<String> litr = null;

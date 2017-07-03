@@ -1,0 +1,75 @@
+
+<%@page import="com.gcit.lms.entity.Author"%>
+<%@page import="com.gcit.lms.entity.Book"%>
+<%@page import="com.gcit.lms.service.LibrarianService"%>
+<%@include file="include.html"%>
+
+<%@page import="java.util.*"%>
+
+<%
+	Integer branchId = Integer.parseInt(request.getParameter("branchId"));
+	LibrarianService service = new LibrarianService();
+	List<Book> books = new ArrayList<Book>();
+	Integer bCount = service.getBooksCount();
+	int pages = 0;
+	if(bCount%10> 0){
+		pages = bCount/10+1;
+	}else{
+		pages = bCount/10;
+	}
+	if(request.getAttribute("books")!=null){
+		books = (List<Book>)(request.getAttribute("books"));
+		}else{
+			books = service.getAllBooks(1);	
+		}
+%>
+<div class="jumbotron">
+	
+	<h2>Below are the list of Books in LMS</h2>
+	${message}
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li><a href="#" aria-label="Previous"> <span
+					aria-hidden="true">&laquo;</span>
+			</a></li>
+			<%for(int i=1; i<=pages; i++){ %>
+				<li><a href="pageBooks?pageNo=<%=i%>"><%=i%></a></li>
+			<%} %>
+			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+			</a></li>
+		</ul>
+	</nav>
+	<table class="table">
+		<tr>
+			<th>Book ID</th>
+			<th>Title</th>
+			<th>Author of Book</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<%
+			for (Book b : books) {
+		%>
+		<tr>
+			<td><%=books.indexOf(b) + 1%></td>
+			<td><%=b.getTitle()%></td>
+			<td>
+				<%
+					for (Author a: b.getAuthors()) {
+							out.println(a.getAuthorName() + "|");
+						}
+				%>
+			</td>
+			
+			<td><a href="updatecops.jsp?bookId=<%=b.getBookId()%>&branchId=<%=branchId%>">
+   <button class="btn btn-sm btn-primary">Submit</button></a></td>
+		</tr>
+		<%
+			}
+		%>
+	</table>
+</div>
+
+
+
+

@@ -1,0 +1,71 @@
+package com.gcit.lms.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.gcit.lms.entity.Library;
+import com.gcit.lms.service.LibrarianService;
+
+/**
+ * Servlet implementation class LibraryServlet
+ */
+@WebServlet("/LibraryServlet")
+public class LibraryServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	 LibrarianService lService = new LibrarianService();
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public LibraryServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+		String reqUrl = request.getRequestURI().substring(request.getContextPath().length(),
+				request.getRequestURI().length());
+		Library branch = new Library();
+		switch (reqUrl) {
+		case "/pageBranch":
+			if (request.getParameter("pageNo") != null && !request.getParameter("pageNo").isEmpty()) {
+				Integer pageNo = Integer.parseInt(request.getParameter("pageNo"));
+
+				try {
+					List<Library> branches = lService.getAllBranches(pageNo);
+					request.setAttribute("branches", branches);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			RequestDispatcher rd8 = request.getRequestDispatcher("/editbranches.jsp");
+			rd8.forward(request, response);
+			break;
+		default:break;
+		
+		}
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}
