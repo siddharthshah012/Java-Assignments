@@ -4981,3 +4981,13 @@
 2017-07-03 15:04:23,104 [Worker-356] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2017-07-03 15:04:23,106 [Worker-356] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
 2017-07-03 15:04:23,108 [Worker-356] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2017-07-04 02:40:50,639 [Worker-388] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.gcit:lms:1.0.0-BUILD-SNAPSHOT @ C:\Users\Siddharth\Documents\workspace-sts-3.6.4.RELEASE\SpringRestLMS\pom.xml.
+2017-07-04 02:40:52,028 [Worker-388] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-07-04 02:40:52,033 [Worker-388] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2017-07-04 02:40:52,045 [Worker-388] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-07-04 02:40:52,048 [Worker-388] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2017-07-04 02:40:53,181 [Worker-398] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.gcit:lms:1.0.0-BUILD-SNAPSHOT @ C:\Users\Siddharth\Documents\workspace-sts-3.6.4.RELEASE\SpringRestLMS\pom.xml.
+2017-07-04 02:41:05,423 [Worker-388] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-07-04 02:41:05,425 [Worker-388] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2017-07-04 02:41:05,428 [Worker-388] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-07-04 02:41:05,429 [Worker-388] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
